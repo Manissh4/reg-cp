@@ -4,10 +4,10 @@ import { CommonRightSection } from "@/components/common-right-section"
 
 export default function CPGRAMSLogin() {
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <CommonHeader />
 
-      <div className="flex min-h-[calc(100vh-64px)]">
+      <div className="flex flex-1">
         <DecorativeLeftSection />
 
         <CommonRightSection maxWidth="sm" className="space-y-8">
@@ -27,7 +27,7 @@ export default function CPGRAMSLogin() {
 
           <a
             href="/register"
-            className="block w-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 shadow-lg"
+            className="w-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 shadow-lg"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />

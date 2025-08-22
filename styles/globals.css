@@ -113,6 +113,11 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --color-label-dark: #212121;
+  --font-roboto: 'Roboto', sans-serif;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
