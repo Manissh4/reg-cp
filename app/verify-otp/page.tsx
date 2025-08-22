@@ -4,12 +4,16 @@ import { useState } from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useSearchParams } from "next/navigation"
-import { CommonHeader } from "@/components/common-header"
 import { DecorativeLeftSection } from "@/components/decorative-left-section"
 import { CommonRightSection } from "@/components/common-right-section"
 import { CustomInput } from "@/components/ui/custom-input"
-import { Button } from "@/components/ui/button"
-import { Phone, Mail, CheckCircle, AlertCircle, X } from "lucide-react"
+import { CheckCircle, AlertCircle, X } from "lucide-react"
+import { FaCircleCheck } from "react-icons/fa6";
+import { FaMobileScreenButton } from "react-icons/fa6";
+import { MdOutlineMail, MdOutlineChevronRight } from "react-icons/md";
+import { LiaTimesSolid } from "react-icons/lia";
+import "@/styles/globals.css"
+import Link from "next/link"
 
 const getValidationSchema = (userType: string) => {
   if (userType === "nri") {
@@ -26,7 +30,7 @@ const getValidationSchema = (userType: string) => {
 export default function VerifyOTPPage() {
   const searchParams = useSearchParams()
   const userType = searchParams.get("userType") || "indian"
-  const phone = searchParams.get("phone") || "+91 8071234567"
+  const phone = searchParams.get("phone") || "+91 80712 34567"
   const email = searchParams.get("email") || "kevin.work@gmail.com"
   const isNRI = userType === "nri"
 
@@ -105,177 +109,196 @@ export default function VerifyOTPPage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-[#f8fafc]">
-      <CommonHeader />
+  const handleModalClose = () => {
+    setShowSuccessModal(false);
+  }
 
-      <div className="flex min-h-[calc(100vh-64px)]">
+  return (
+    <>
+      <div className="flex-1 flex min-h-full">
         <DecorativeLeftSection />
 
         <CommonRightSection maxWidth="md">
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-8">Verify OTP</h2>
-          </div>
+          <div className="flex flex-col gap-12 max-w-[400px]">
+            <p className="text-[22px] font-medium text-label-dark">Verify OTP</p>
+            <form onSubmit={formik.handleSubmit} className="flex flex-col gap-12">
+              {!isNRI && (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <FaMobileScreenButton className="min-w-6 min-h-6"/>
+                    <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">+91 {phone}</span></p>
+                  </div>
 
-          <form onSubmit={formik.handleSubmit} className="space-y-8">
-            {!isNRI && (
-              <div className="space-y-4">
+                  <div className="flex">
+                    <CustomInput
+                      type="otp"
+                      otpLength={6}
+                      value={formik.values.phoneOtp || ""}
+                      onChange={(e) => {
+                        formik.setFieldValue("phoneOtp", e.target.value)
+                        if (phoneOtpStatus !== "idle") {
+                          setPhoneOtpStatus("idle")
+                        }
+                      }}
+                      error={phoneOtpStatus === "error"}
+                      success={phoneOtpStatus === "success"}
+                    />
+                  </div>
+
+                  {phoneOtpStatus === "success" && (
+                    <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>OTP Verified successfully</span>
+                    </div>
+                  )}
+
+                  {phoneOtpStatus === "error" && (
+                    <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4" />
+                        <span>Incorrect OTP</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleResend("email")}
+                        disabled={emailResendTimer > 0}
+                        className=" disabled:text-gray-400 cursor-pointer"
+                      >
+                        <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                          {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                          <MdOutlineChevronRight className="w-6 h-6"/>
+                        </div>
+                      </button>
+                    </div>
+                  )}
+
+                  {phoneOtpStatus === "idle" && <div className="flex justify-between items-center">
+                    <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
+                    <button
+                      type="button"
+                      onClick={() => handleResend("email")}
+                      disabled={emailResendTimer > 0}
+                      className=" disabled:text-gray-400 cursor-pointer"
+                    >
+                      <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                        {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                        <MdOutlineChevronRight className="w-6 h-6"/>
+                      </div>
+                    </button>
+                  </div>}
+                </div>
+              )}
+              <div className="w-full border border-[#DDDDDD]" />
+              <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Phone className="w-4 h-4" />
-                  <span>Please enter OTP sent to {phone}</span>
+                  <MdOutlineMail className="min-w-6 min-h-6" />
+                  <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">{email}</span></p>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex">
                   <CustomInput
                     type="otp"
                     otpLength={6}
-                    value={formik.values.phoneOtp || ""}
+                    value={formik.values.emailOtp}
                     onChange={(e) => {
-                      formik.setFieldValue("phoneOtp", e.target.value)
-                      if (phoneOtpStatus !== "idle") {
-                        setPhoneOtpStatus("idle")
+                      formik.setFieldValue("emailOtp", e.target.value)
+                      if (emailOtpStatus !== "idle") {
+                        setEmailOtpStatus("idle")
                       }
                     }}
-                    error={phoneOtpStatus === "error"}
-                    success={phoneOtpStatus === "success"}
+                    error={emailOtpStatus === "error"}
+                    success={emailOtpStatus === "success"}
                   />
                 </div>
 
-                {phoneOtpStatus === "success" && (
-                  <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                {emailOtpStatus === "success" && (
+                  <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
                     <CheckCircle className="w-4 h-4" />
                     <span>OTP Verified successfully</span>
                   </div>
                 )}
 
-                {phoneOtpStatus === "error" && (
-                  <div className="flex items-center justify-center gap-2 text-sm text-red-600">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>Incorrect OTP</span>
+                {emailOtpStatus === "error" && (
+                  <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4" />
+                      <span>Incorrect OTP</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleResend("email")}
+                      disabled={emailResendTimer > 0}
+                      className=" disabled:text-gray-400 cursor-pointer"
+                    >
+                      <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                        {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                        <MdOutlineChevronRight className="w-6 h-6"/>
+                      </div>
+                    </button>
                   </div>
                 )}
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Didn't receive OTP?</span>
+                {emailOtpStatus === "idle" && <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
                   <button
                     type="button"
-                    onClick={() => handleResend("phone")}
-                    disabled={phoneResendTimer > 0}
-                    className="text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+                    onClick={() => handleResend("email")}
+                    disabled={emailResendTimer > 0}
+                    className=" disabled:text-gray-400 cursor-pointer"
                   >
-                    {phoneResendTimer > 0 ? `Resend (${phoneResendTimer}s)` : "Resend"}
+                    <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                      {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                      <MdOutlineChevronRight className="w-6 h-6"/>
+                    </div>
                   </button>
-                </div>
+                </div>}
               </div>
-            )}
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Mail className="w-4 h-4" />
-                <span>Please enter OTP sent to {email}</span>
-              </div>
-
-              <div className="flex justify-center">
-                <CustomInput
-                  type="otp"
-                  otpLength={6}
-                  value={formik.values.emailOtp}
-                  onChange={(e) => {
-                    formik.setFieldValue("emailOtp", e.target.value)
-                    if (emailOtpStatus !== "idle") {
-                      setEmailOtpStatus("idle")
-                    }
-                  }}
-                  error={emailOtpStatus === "error"}
-                  success={emailOtpStatus === "success"}
-                />
-              </div>
-
-              {emailOtpStatus === "success" && (
-                <div className="flex items-center justify-center gap-2 text-sm text-green-600">
-                  <CheckCircle className="w-4 h-4" />
-                  <span>OTP Verified successfully</span>
-                </div>
-              )}
-
-              {emailOtpStatus === "error" && (
-                <div className="flex items-center justify-center gap-2 text-sm text-red-600">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Incorrect OTP</span>
-                </div>
-              )}
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Didn't receive OTP?</span>
+              <div className="flex flex-col gap-4">
                 <button
-                  type="button"
-                  onClick={() => handleResend("email")}
-                  disabled={emailResendTimer > 0}
-                  className="text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+                  type="submit"
+                  className="w-full bg-[#613AF5] text-white rounded-[8px] font-medium py-3 px-8 text-base cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={
+                    !formik.values.emailOtp ||
+                    formik.values.emailOtp.length !== 6 ||
+                    (!isNRI && (!formik.values.phoneOtp || formik.values.phoneOtp.length !== 6)) ||
+                    phoneOtpStatus === "error" ||
+                    emailOtpStatus === "error"
+                  }
                 >
-                  {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                  Verify
                 </button>
+                <div className="flex items-center gap-2">
+                  <p className="text-text-hint text-sm">Already have an account? </p>
+                  <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
+                    Log In
+                  </Link>
+                </div>
               </div>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white py-3 rounded-lg font-medium"
-              disabled={
-                !formik.values.emailOtp ||
-                formik.values.emailOtp.length !== 6 ||
-                (!isNRI && (!formik.values.phoneOtp || formik.values.phoneOtp.length !== 6))
-              }
-            >
-              Verify
-            </Button>
-
-            <div className="text-center">
-              <span className="text-sm text-gray-500">Already have an account? </span>
-              <a href="/" className="text-sm text-[#1877f2] hover:underline font-medium">
-                Log In
-              </a>
-            </div>
-          </form>
+            </form>
+          </div>
         </CommonRightSection>
       </div>
 
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
-            <button
-              onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="text-center">
-              <div className="flex justify-center mb-4">
-                <CheckCircle className="w-12 h-12 text-green-500" />
+        <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-md w-full flex flex-col border border-[#CED4DA]">
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center justify-center gap-2">
+                <FaCircleCheck className="text-[#3C9718] min-w-6 min-h-6" />
+                <p className="font-medium text-base">Register Successfully</p>
               </div>
-
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Register Successfully</h3>
-
-              <p className="text-sm text-gray-600 mb-6">
-                Registration successful! You can now log in to submit grievances, track their status, and receive
-                updates from the concerned authorities
-              </p>
-
-              <Button
-                onClick={() => {
-                  setShowSuccessModal(false)
-                  // Navigate to login or dashboard
-                  window.location.href = "/"
-                }}
-                className="w-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white py-2 rounded-lg font-medium"
-              >
-                Done
-              </Button>
+              <LiaTimesSolid className="text-[#212121] min-w-6 min-h-6 font-extrabold cursor-pointer" onClick={handleModalClose}/>
+            </div>
+            <p className="text-sm text-[#727272] py-3 px-4 font-normal">
+              Registration successful! You can now log in to submit grievances, track their status, and receive
+              updates from the concerned authorities
+            </p>
+            <div className="flex justify-end p-4">
+              <div className="bg-[#613AF5] text-white py-2.5 px-6 rounded-[8px] cursor-pointer" onClick={handleModalClose}>Done</div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

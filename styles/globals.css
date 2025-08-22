@@ -115,6 +115,9 @@
 
 @theme {
   --color-label-dark: #212121;
+  --color-text-hint: #727272;
+  --color-text-hint-2: #6C6A71;
+  --color-error: #B7131A;
   --font-roboto: 'Roboto', sans-serif;
 }
 

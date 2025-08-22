@@ -95,8 +95,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       lg: "h-12 px-4 text-base",
     }
 
+    console.log("error", error);
+
     const variantClasses = {
-      default: "border border-input bg-background",
+      default: "border border-input bg-background border-[#C6C6C6]",
       filled: "border-0 bg-muted",
       underlined: "border-0 border-b-2 border-input bg-transparent rounded-none",
     }
@@ -125,7 +127,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
     const baseInputClasses = cn(
       sizeClasses[size],
       variantClasses[variant],
-      error && "border-red-500 focus:border-red-500 focus:ring-red-200",
+      error && "border-[#B7131A] focus:border-red-500 focus:ring-red-200",
       success && "border-green-500 focus:border-green-500 focus:ring-green-200",
       loading && "opacity-50 cursor-not-allowed",
       className,
@@ -140,7 +142,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
     if (type === "otp") {
       return (
-        <div className={cn("space-y-2", containerClassName)}>
+        <div className={cn(containerClassName)}>
           {label && <label className="text-sm font-medium text-foreground">{label}</label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
@@ -161,8 +163,8 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                   key={index}
                   index={index}
                   className={cn(
-                    "w-12 h-12 text-center border-2 rounded-lg",
-                    "border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200",
+                    "w-[60px] h-[48px] text-center border rounded-[8px] py-2.5 px-3",
+                    "border-[#C6C6C6] focus:border-blue-500 focus:ring-2 focus:ring-blue-200",
                     error && "border-red-500 focus:border-red-500 focus:ring-red-200",
                     success && "border-green-500 focus:border-green-500 focus:ring-green-200",
                   )}
@@ -180,7 +182,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
     if (type === "select" && options) {
       return (
-        <div className={cn("space-y-2", containerClassName)}>
+        <div className={cn(containerClassName)}>
           {label && <label className="text-sm font-medium text-foreground">{label}</label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
@@ -190,7 +192,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
             </SelectTrigger>
             <SelectContent>
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={option.value} className="cursor-pointer">
                   {option.label}
                 </SelectItem>
               ))}
@@ -206,7 +208,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
     if (type === "textarea") {
       return (
-        <div className={cn("space-y-2", containerClassName)}>
+        <div className={cn(containerClassName)}>
           {label && <label className="text-sm font-medium text-foreground">{label}</label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
@@ -247,23 +249,22 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       )
 
     return (
-      <div className={cn("space-y-2", containerClassName)}>
+      <div className={cn(containerClassName)}>
         {label && <label className="text-sm font-medium text-foreground">{label}</label>}
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
         <div className="relative">
-          {(actualPrefixIcon || prefix) && (
+          {/* {(actualPrefixIcon || prefix) && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
               {actualPrefixIcon}
               {prefix && <span className="text-sm text-muted-foreground ml-1">{prefix}</span>}
             </div>
-          )}
+          )} */}
 
           <Input
             type={type === "password" ? (showPassword ? "text" : "password") : type}
             className={cn(
               baseInputClasses,
-              (actualPrefixIcon || prefix) && "pl-10",
               (actualSuffixIcon || suffix) && "pr-10",
             )}
             maxLength={maxLength}

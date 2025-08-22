@@ -2,17 +2,20 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useRouter } from "next/navigation"
-import { CommonHeader } from "@/components/common-header"
 import { DecorativeLeftSection } from "@/components/decorative-left-section"
 import { CustomInput } from "@/components/ui/custom-input"
 import { useState } from "react"
 import { CommonRightSection } from "@/components/common-right-section"
+import Link from "next/link"
+import Image from "next/image"
+import { MdErrorOutline } from "react-icons/md";
+import { IoMdCheckmark } from "react-icons/io";
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required("Full name is required"),
   countryCode: Yup.string().required("Country code is required"),
   mobileNumber: Yup.string().required("Mobile number is required"),
-  email: Yup.string().email("Invalid email address"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .matches(/[A-Z]/, "Password must contain an uppercase letter")
@@ -41,18 +44,17 @@ export default function CPGRAMSRegister() {
 
   const formik = useFormik({
     initialValues: {
-      fullName: "Arpit Tyagi",
-      countryCode: "+91", // Added country code field
-      mobileNumber: "8071234567",
-      email: "arpittyagi845@gmail.com",
-      password: "********",
-      confirmPassword: "********",
-      agreeToTerms: true,
-      captchaVerified: true,
+      fullName: "",
+      countryCode: "+91",
+      mobileNumber: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      agreeToTerms: false,
+      captchaVerified: false,
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log("[v0] Registration form submitted:", values)
       const isIndian = values.countryCode === "+91"
       const params = new URLSearchParams({
         userType: isIndian ? "indian" : "nri",
@@ -79,22 +81,15 @@ export default function CPGRAMSRegister() {
   const passwordRequirements = validatePassword(formik.values.password)
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
-      <CommonHeader />
-
-      <div className="flex min-h-[calc(100vh-64px)]">
-        <DecorativeLeftSection />
-
-        <CommonRightSection maxWidth="md">
-          <div className="text-center">
-            <h1 className="text-xl font-semibold text-gray-800 mb-8">Enter your details to Register</h1>
-          </div>
-
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name<span className="text-red-500">*</span>
+    <div className="flex-1 flex bg-[url('/registration-left-banner.png')] bg-cover">
+      <DecorativeLeftSection />
+      <CommonRightSection maxWidth="md">
+        <div className="flex flex-col gap-4 max-w-[400px]">
+          <p className="text-label-dark font-medium text-[22px]">Enter your details to Register</p>
+          <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-label-dark font-medium text-sm">
+                Full Name<span className="text-error">*</span>
               </label>
               <CustomInput
                 type="text"
@@ -103,53 +98,56 @@ export default function CPGRAMSRegister() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Enter your full name here"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7c3aed] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border rounded-lg text-label-dark outline-none"
                 error={formik.touched.fullName && !!formik.errors.fullName}
                 required
               />
               {formik.touched.fullName && formik.errors.fullName && (
-                <div className="text-sm text-red-500 mt-1">{formik.errors.fullName}</div>
+                <div className="flex items-center gap-1">
+                  <MdErrorOutline className="text-error" />
+                  <p className="text-sm text-error">{formik.errors.fullName}</p>
+                </div>
               )}
             </div>
 
-            {/* Mobile Number */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mobile Number<span className="text-red-500">*</span>
+            <div className="w-full flex flex-col gap-1">
+              <label className="text-label-dark font-medium text-sm">
+                Mobile Number<span className="text-error">*</span>
               </label>
-              <div className="flex">
-                <select
+              <div className="min-w-full flex items-center gap-2">
+                <CustomInput 
+                  type="select"
+                  options={countryCodes.map((c) => ({ label: `${c.code}`, value: c.code }))}
                   name="countryCode"
                   value={formik.values.countryCode}
                   onChange={formik.handleChange}
-                  className="px-3 py-3 border border-gray-300 rounded-l-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-[#7c3aed] focus:border-transparent outline-none"
-                >
-                  {countryCodes.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.flag} {country.code}
-                    </option>
-                  ))}
-                </select>
-                <CustomInput
-                  type="tel"
-                  name="mobileNumber"
-                  value={formik.values.mobileNumber}
-                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  placeholder="Enter your mobile number here"
-                  className="flex-1 px-4 py-3 border border-l-0 border-gray-300 rounded-r-lg focus:ring-2 focus:ring-[#7c3aed] focus:border-transparent outline-none transition-all"
-                  error={formik.touched.mobileNumber && !!formik.errors.mobileNumber}
-                  required
+                  className="border-[#C6C6C6] px-2 py-4 cursor-pointer"
                 />
+                <div className="flex-1">
+                  <CustomInput
+                    type="tel"
+                    name="mobileNumber"
+                    value={formik.values.mobileNumber}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter your mobile number here"
+                    className="flex-1 px-4 py-3 border rounded-lg text-label-dark outline-none"
+                    error={formik.touched.mobileNumber && !!formik.errors.mobileNumber}
+                    required
+                  />
+                </div>
               </div>
               {formik.touched.mobileNumber && formik.errors.mobileNumber && (
-                <div className="text-sm text-red-500 mt-1">{formik.errors.mobileNumber}</div>
+                <div className="flex items-center gap-1">
+                  <MdErrorOutline className="text-error" />
+                  <p className="text-sm text-error">{formik.errors.mobileNumber}</p>
+                </div>
               )}
             </div>
 
-            {/* Email Address */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-label-dark font-medium text-sm">Email Address</label>
               <CustomInput
                 type="email"
                 name="email"
@@ -157,27 +155,20 @@ export default function CPGRAMSRegister() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Enter your email ID here"
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#7c3aed] focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border rounded-lg text-label-dark outline-none"
                 error={formik.touched.email && !!formik.errors.email}
               />
               {formik.touched.email && formik.errors.email && (
-                <div className="flex items-center gap-1 mt-1">
-                  <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-sm text-red-500">{formik.errors.email}</span>
+                <div className="flex items-center gap-1">
+                  <MdErrorOutline className="text-error" />
+                  <p className="text-sm text-error">{formik.errors.email}</p>
                 </div>
               )}
             </div>
 
-            {/* Create Password */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Create Password</label>
-              <div className="relative">
+            <div className="relative flex flex-col gap-1">
+              <label className="text-label-dark font-medium text-sm">Create Password</label>
+              <div className="flex flex-col gap-3">
                 <CustomInput
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -186,43 +177,22 @@ export default function CPGRAMSRegister() {
                   onFocus={() => setShowPasswordRequirements(true)}
                   onBlur={() => setShowPasswordRequirements(false)}
                   placeholder="Create password"
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7c3aed] focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border rounded-lg text-label-dark outline-none"
                   required
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                      />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  )}
-                </button>
+                <CustomInput
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formik.values.confirmPassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Confirm password"
+                  className="w-full px-4 py-3 border rounded-lg text-label-dark outline-none"
+                  required
+                />
               </div>
 
-              {showPasswordRequirements && (
+              {/* {showPasswordRequirements && (
                 <div className="absolute top-full left-0 mt-2 w-80 bg-gray-800 text-white p-4 rounded-lg shadow-lg z-10">
                   <div className="text-sm font-medium mb-3">Requirements:</div>
                   <div className="space-y-2">
@@ -308,131 +278,65 @@ export default function CPGRAMSRegister() {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
-            {/* Confirm Password */}
-            <div className="relative">
-              <div className="relative">
-                <CustomInput
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  value={formik.values.confirmPassword}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  placeholder="Confirm password"
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7c3aed] focus:border-transparent outline-none transition-all"
-                  required
-                />
-                {formik.values.password &&
-                  formik.values.confirmPassword &&
-                  formik.values.password === formik.values.confirmPassword && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  )}
+            <div className="flex items-center justify-between gap-3 py-2 px-4 border border-[#C6C6C6] rounded-lg bg-gray-50">
+              <div className="flex items-center gap-2">
+                {formik.values.captchaVerified ? (
+                  <IoMdCheckmark className="w-7 h-7 text-[#18A164]" />
+                ) : (
+                  <input
+                    type="checkbox"
+                    name="captchaVerified"
+                    checked={formik.values.captchaVerified}
+                    onChange={formik.handleChange}
+                    className="w-7 h-7 border border-[#C1C1C1] cursor-pointer"
+                  />
+                )}
+                <span className="text-sm text-gray-700">I'm not a robot</span>
               </div>
-              {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-                <div className="text-sm text-red-500 mt-1">{formik.errors.confirmPassword}</div>
-              )}
+              <Image src={'./reCAPTCHA.png'} alt="recaptcha" width={60} height={60}/>
             </div>
 
-            {/* reCAPTCHA */}
-            <div className="flex items-center gap-3 p-4 border border-gray-300 rounded-lg bg-gray-50">
-              {formik.values.captchaVerified ? (
-                <div className="w-5 h-5 bg-green-500 rounded flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              ) : (
-                <input
-                  type="checkbox"
-                  name="captchaVerified"
-                  checked={formik.values.captchaVerified}
-                  onChange={formik.handleChange}
-                  className="w-5 h-5 text-[#7c3aed] border-gray-300 rounded focus:ring-[#7c3aed]"
-                />
-              )}
-              <span className="text-sm text-gray-700">I'm not a robot</span>
-              <div className="ml-auto">
-                <div className="text-xs text-gray-500">reCAPTCHA</div>
-                <div className="flex gap-1">
-                  <div className="w-4 h-4 bg-blue-500 rounded-sm"></div>
-                  <div className="w-4 h-4 bg-green-500 rounded-sm"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Terms and Privacy */}
-            <div className="flex items-start gap-3">
-              {formik.values.agreeToTerms ? (
-                <div className="w-5 h-5 bg-[#1877f2] rounded flex items-center justify-center mt-0.5">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              ) : (
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2">
                 <input
                   type="checkbox"
                   name="agreeToTerms"
                   checked={formik.values.agreeToTerms}
                   onChange={formik.handleChange}
-                  className="w-5 h-5 text-[#7c3aed] border-gray-300 rounded focus:ring-[#7c3aed] mt-0.5"
+                  className="w-5 h-5 text-[#613AF5] border-gray-300 rounded focus:ring-[#613AF5] cursor-pointer"
                   required
                 />
-              )}
-              <span className="text-sm text-gray-600">
-                I agree to the{" "}
-                <button type="button" className="text-[#1877f2] hover:underline">
-                  Terms of Use
-                </button>{" "}
-                and have read the{" "}
-                <button type="button" className="text-[#1877f2] hover:underline">
-                  Privacy Policy
-                </button>
-              </span>
+                <span className="text-xs text-text-hint-2 font-normal">
+                  I agree to the{" "}
+                  <Link href="/terms" className="text-[#613AF5]">
+                    Terms of Use
+                  </Link>{" "}
+                  and have read the{" "}
+                  <Link href="/privacy" className="text-[#613AF5]">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-[#613AF5] text-white rounded-[8px] font-medium py-3 px-8 text-base cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={!formik.isValid || !formik.values.agreeToTerms || !formik.values.captchaVerified}
+              >
+                Continue
+              </button>
+              <div className="flex items-center gap-2">
+                <p className="text-text-hint text-sm">Already have an account? </p>
+                <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
+                  Log In
+                </Link>
+              </div>
             </div>
-
-            {formik.touched.agreeToTerms && formik.errors.agreeToTerms && (
-              <div className="text-sm text-red-500 mt-1">{formik.errors.agreeToTerms}</div>
-            )}
-
-            {formik.touched.captchaVerified && formik.errors.captchaVerified && (
-              <div className="text-sm text-red-500 mt-1">{formik.errors.captchaVerified}</div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white py-3 px-6 rounded-lg font-medium transition-colors shadow-lg mt-6"
-            >
-              Register
-            </button>
           </form>
-
-          {/* Login Link */}
-          <div className="text-center text-sm text-gray-600 mt-6">
-            Already have an account?{" "}
-            <a href="/" className="text-[#1877f2] hover:underline font-medium">
-              Log In
-            </a>
-          </div>
-        </CommonRightSection>
-      </div>
+        </div>
+      </CommonRightSection>
     </div>
   )
 }
