@@ -115,7 +115,7 @@ export default function VerifyOTPPage() {
 
   return (
     <>
-      <div className="flex-1 flex min-h-full">
+      <div className="flex-1 flex min-h-full bg-[url('/registration-left-banner.png')] bg-cover">
         <DecorativeLeftSection />
 
         <CommonRightSection maxWidth="md">

@@ -1,4 +1,5 @@
 "use client"
+
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useRouter } from "next/navigation"
@@ -10,6 +11,9 @@ import Link from "next/link"
 import Image from "next/image"
 import { MdErrorOutline } from "react-icons/md";
 import { IoMdCheckmark } from "react-icons/io";
+import { FaTimesCircle,  FaCheckCircle } from "react-icons/fa";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import "@/styles/globals.css"
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required("Full name is required"),
@@ -58,7 +62,7 @@ export default function CPGRAMSRegister() {
       const isIndian = values.countryCode === "+91"
       const params = new URLSearchParams({
         userType: isIndian ? "indian" : "nri",
-        phone: `${values.countryCode}${values.mobileNumber}`,
+        phone: `${values.mobileNumber}`,
         email: values.email,
       })
       router.push(`/verify-otp?${params.toString()}`)
@@ -115,12 +119,13 @@ export default function CPGRAMSRegister() {
                 Mobile Number<span className="text-error">*</span>
               </label>
               <div className="min-w-full flex items-center gap-2">
-                <CustomInput 
+                <CustomInput
                   type="select"
                   options={countryCodes.map((c) => ({ label: `${c.code}`, value: c.code }))}
                   name="countryCode"
                   value={formik.values.countryCode}
                   onChange={formik.handleChange}
+                  onSelectChange={(value) => formik.setFieldValue("countryCode", value)}
                   onBlur={formik.handleBlur}
                   className="border-[#C6C6C6] px-2 py-4 cursor-pointer"
                 />
@@ -167,7 +172,59 @@ export default function CPGRAMSRegister() {
             </div>
 
             <div className="relative flex flex-col gap-1">
-              <label className="text-label-dark font-medium text-sm">Create Password</label>
+              <Tooltip open={showPasswordRequirements}>
+                <TooltipTrigger
+                  asChild
+                  onFocus={() => setShowPasswordRequirements(true)}
+                  onBlur={() => setShowPasswordRequirements(false)}
+                >
+                  <label className="text-label-dark font-medium text-sm cursor-pointer">
+                    Create Password
+                  </label>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  sideOffset={8}
+                  className="bg-label-dark text-white rounded-xl p-3 font-medium text-sm opacity-85"
+                  align="start"
+                >
+                  <div className="text-sm font-medium mb-3">Requirements:</div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      {passwordRequirements.minLength ? (
+                        <FaCheckCircle className="w-5 h-5 text-success" />
+                      ) : (
+                        <FaTimesCircle className="w-5 h-5 text-error" />
+                      )}
+                      <span className="text-sm">Minimum of 8 characters</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordRequirements.hasUppercase ? (
+                        <FaCheckCircle className="w-5 h-5 text-success" />
+                      ) : (
+                        <FaTimesCircle className="w-5 h-5 text-error" />
+                      )}
+                      <span className="text-sm">Contain an uppercase letters</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordRequirements.hasNumber ? (
+                        <FaCheckCircle className="w-5 h-5 text-success" />
+                      ) : (
+                        <FaTimesCircle className="w-5 h-5 text-error" />
+                      )}
+                      <span className="text-sm">Contain a number (0-9)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordRequirements.hasSpecialChar ? (
+                        <FaCheckCircle className="w-5 h-5 text-success" />
+                      ) : (
+                        <FaTimesCircle className="w-5 h-5 text-error" />
+                      )}
+                      <span className="text-sm">Contain special character (!@#$%^&*)</span>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
               <div className="flex flex-col gap-3">
                 <CustomInput
                   type={showPassword ? "text" : "password"}
@@ -191,94 +248,6 @@ export default function CPGRAMSRegister() {
                   required
                 />
               </div>
-
-              {/* {showPasswordRequirements && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-gray-800 text-white p-4 rounded-lg shadow-lg z-10">
-                  <div className="text-sm font-medium mb-3">Requirements:</div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      {passwordRequirements.minLength ? (
-                        <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      <span className="text-sm">Minimum of 8 characters</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {passwordRequirements.hasUppercase ? (
-                        <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      <span className="text-sm">Contain an uppercase letters</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {passwordRequirements.hasNumber ? (
-                        <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      <span className="text-sm">Contain a number (0-9)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {passwordRequirements.hasSpecialChar ? (
-                        <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      <span className="text-sm">Contain special character (!@#$%^&*)</span>
-                    </div>
-                  </div>
-                </div>
-              )} */}
             </div>
 
             <div className="flex items-center justify-between gap-3 py-2 px-4 border border-[#C6C6C6] rounded-lg bg-gray-50">
@@ -296,7 +265,7 @@ export default function CPGRAMSRegister() {
                 )}
                 <span className="text-sm text-gray-700">I'm not a robot</span>
               </div>
-              <Image src={'./reCAPTCHA.png'} alt="recaptcha" width={60} height={60}/>
+              <Image src={'./reCAPTCHA.png'} alt="recaptcha" width={60} height={60} />
             </div>
 
             <div className="flex flex-col gap-3">

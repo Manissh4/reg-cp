@@ -4,7 +4,7 @@ import { CommonRightSection } from "@/components/common-right-section"
 
 export default function CPGRAMSLogin() {
   return (
-    <div className="flex flex-1">
+    <div className="flex flex-1 bg-[url('/registration-left-banner.png')] bg-cover">
       <DecorativeLeftSection />
       <CommonRightSection maxWidth="sm" className="space-y-8">
         <div className="text-center space-y-6">
