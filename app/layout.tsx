@@ -29,7 +29,9 @@ export default function RootLayout({
       <body>
         <div className='min-h-screen flex flex-col'>
           <CommonHeader />
-          {children}
+          <div className="flex flex-1">
+            {children}
+          </div>
         </div>
       </body>
     </html>

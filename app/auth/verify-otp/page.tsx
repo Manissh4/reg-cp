@@ -115,110 +115,41 @@ export default function VerifyOTPPage() {
 
   return (
     <>
-      <div className="flex-1 flex min-h-full bg-[url('/registration-left-banner.png')] bg-cover">
-        <DecorativeLeftSection />
-
-        <CommonRightSection maxWidth="md">
-          <div className="flex flex-col gap-12 max-w-[400px]">
-            <p className="text-[22px] font-medium text-label-dark">Verify OTP</p>
-            <form onSubmit={formik.handleSubmit} className="flex flex-col gap-12">
-              {!isNRI && (
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <FaMobileScreenButton className="min-w-6 min-h-6"/>
-                    <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">+91 {phone}</span></p>
-                  </div>
-
-                  <div className="flex">
-                    <CustomInput
-                      type="otp"
-                      otpLength={6}
-                      value={formik.values.phoneOtp || ""}
-                      onChange={(e) => {
-                        formik.setFieldValue("phoneOtp", e.target.value)
-                        if (phoneOtpStatus !== "idle") {
-                          setPhoneOtpStatus("idle")
-                        }
-                      }}
-                      error={phoneOtpStatus === "error"}
-                      success={phoneOtpStatus === "success"}
-                    />
-                  </div>
-
-                  {phoneOtpStatus === "success" && (
-                    <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
-                      <CheckCircle className="w-4 h-4" />
-                      <span>OTP Verified successfully</span>
-                    </div>
-                  )}
-
-                  {phoneOtpStatus === "error" && (
-                    <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
-                      <div className="flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>Incorrect OTP</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleResend("email")}
-                        disabled={emailResendTimer > 0}
-                        className=" disabled:text-gray-400 cursor-pointer"
-                      >
-                        <div className="flex items-center text-sm text-[#613AF5] font-medium">
-                          {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
-                          <MdOutlineChevronRight className="w-6 h-6"/>
-                        </div>
-                      </button>
-                    </div>
-                  )}
-
-                  {phoneOtpStatus === "idle" && <div className="flex justify-between items-center">
-                    <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
-                    <button
-                      type="button"
-                      onClick={() => handleResend("email")}
-                      disabled={emailResendTimer > 0}
-                      className=" disabled:text-gray-400 cursor-pointer"
-                    >
-                      <div className="flex items-center text-sm text-[#613AF5] font-medium">
-                        {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
-                        <MdOutlineChevronRight className="w-6 h-6"/>
-                      </div>
-                    </button>
-                  </div>}
-                </div>
-              )}
-              <div className="w-full border border-[#DDDDDD]" />
+      <CommonRightSection maxWidth="md">
+        <div className="flex flex-col gap-12 max-w-[400px]">
+          <p className="text-[22px] font-medium text-label-dark">Verify OTP</p>
+          <form onSubmit={formik.handleSubmit} className="flex flex-col gap-12">
+            {!isNRI && (
               <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <MdOutlineMail className="min-w-6 min-h-6" />
-                  <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">{email}</span></p>
+                <div className="flex items-center gap-2 text-sm">
+                  <FaMobileScreenButton className="min-w-6 min-h-6" />
+                  <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">+91 {phone}</span></p>
                 </div>
 
                 <div className="flex">
                   <CustomInput
                     type="otp"
                     otpLength={6}
-                    value={formik.values.emailOtp}
+                    value={formik.values.phoneOtp || ""}
                     onChange={(e) => {
-                      formik.setFieldValue("emailOtp", e.target.value)
-                      if (emailOtpStatus !== "idle") {
-                        setEmailOtpStatus("idle")
+                      formik.setFieldValue("phoneOtp", e.target.value)
+                      if (phoneOtpStatus !== "idle") {
+                        setPhoneOtpStatus("idle")
                       }
                     }}
-                    error={emailOtpStatus === "error"}
-                    success={emailOtpStatus === "success"}
+                    error={phoneOtpStatus === "error"}
+                    success={phoneOtpStatus === "success"}
                   />
                 </div>
 
-                {emailOtpStatus === "success" && (
+                {phoneOtpStatus === "success" && (
                   <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
                     <CheckCircle className="w-4 h-4" />
                     <span>OTP Verified successfully</span>
                   </div>
                 )}
 
-                {emailOtpStatus === "error" && (
+                {phoneOtpStatus === "error" && (
                   <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
                     <div className="flex items-center gap-2">
                       <AlertCircle className="w-4 h-4" />
@@ -232,13 +163,13 @@ export default function VerifyOTPPage() {
                     >
                       <div className="flex items-center text-sm text-[#613AF5] font-medium">
                         {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
-                        <MdOutlineChevronRight className="w-6 h-6"/>
+                        <MdOutlineChevronRight className="w-6 h-6" />
                       </div>
                     </button>
                   </div>
                 )}
 
-                {emailOtpStatus === "idle" && <div className="flex justify-between items-center">
+                {phoneOtpStatus === "idle" && <div className="flex justify-between items-center">
                   <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
                   <button
                     type="button"
@@ -248,36 +179,101 @@ export default function VerifyOTPPage() {
                   >
                     <div className="flex items-center text-sm text-[#613AF5] font-medium">
                       {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
-                      <MdOutlineChevronRight className="w-6 h-6"/>
+                      <MdOutlineChevronRight className="w-6 h-6" />
                     </div>
                   </button>
                 </div>}
               </div>
-              <div className="flex flex-col gap-4">
-                <button
-                  type="submit"
-                  className="w-full bg-[#613AF5] text-white rounded-[8px] font-medium py-3 px-8 text-base cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={
-                    !formik.values.emailOtp ||
-                    formik.values.emailOtp.length !== 6 ||
-                    (!isNRI && (!formik.values.phoneOtp || formik.values.phoneOtp.length !== 6)) ||
-                    phoneOtpStatus === "error" ||
-                    emailOtpStatus === "error"
-                  }
-                >
-                  Verify
-                </button>
-                <div className="flex items-center gap-2">
-                  <p className="text-text-hint text-sm">Already have an account? </p>
-                  <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
-                    Log In
-                  </Link>
-                </div>
+            )}
+            <div className="w-full border border-[#DDDDDD]" />
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <MdOutlineMail className="min-w-6 min-h-6" />
+                <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">{email}</span></p>
               </div>
-            </form>
-          </div>
-        </CommonRightSection>
-      </div>
+
+              <div className="flex">
+                <CustomInput
+                  type="otp"
+                  otpLength={6}
+                  value={formik.values.emailOtp}
+                  onChange={(e) => {
+                    formik.setFieldValue("emailOtp", e.target.value)
+                    if (emailOtpStatus !== "idle") {
+                      setEmailOtpStatus("idle")
+                    }
+                  }}
+                  error={emailOtpStatus === "error"}
+                  success={emailOtpStatus === "success"}
+                />
+              </div>
+
+              {emailOtpStatus === "success" && (
+                <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
+                  <CheckCircle className="w-4 h-4" />
+                  <span>OTP Verified successfully</span>
+                </div>
+              )}
+
+              {emailOtpStatus === "error" && (
+                <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    <span>Incorrect OTP</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleResend("email")}
+                    disabled={emailResendTimer > 0}
+                    className=" disabled:text-gray-400 cursor-pointer"
+                  >
+                    <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                      {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                      <MdOutlineChevronRight className="w-6 h-6" />
+                    </div>
+                  </button>
+                </div>
+              )}
+
+              {emailOtpStatus === "idle" && <div className="flex justify-between items-center">
+                <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
+                <button
+                  type="button"
+                  onClick={() => handleResend("email")}
+                  disabled={emailResendTimer > 0}
+                  className=" disabled:text-gray-400 cursor-pointer"
+                >
+                  <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                    {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                    <MdOutlineChevronRight className="w-6 h-6" />
+                  </div>
+                </button>
+              </div>}
+            </div>
+            <div className="flex flex-col gap-4">
+              <button
+                type="submit"
+                className="w-full bg-[#613AF5] text-white rounded-[8px] font-medium py-3 px-8 text-base cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={
+                  !formik.values.emailOtp ||
+                  formik.values.emailOtp.length !== 6 ||
+                  (!isNRI && (!formik.values.phoneOtp || formik.values.phoneOtp.length !== 6)) ||
+                  phoneOtpStatus === "error" ||
+                  emailOtpStatus === "error"
+                }
+              >
+                Verify
+              </button>
+              <div className="flex items-center gap-2">
+                <p className="text-text-hint text-sm">Already have an account? </p>
+                <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
+                  Log In
+                </Link>
+              </div>
+            </div>
+          </form>
+        </div>
+      </CommonRightSection>
 
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50">
@@ -287,7 +283,7 @@ export default function VerifyOTPPage() {
                 <FaCircleCheck className="text-[#3C9718] min-w-6 min-h-6" />
                 <p className="font-medium text-base">Register Successfully</p>
               </div>
-              <LiaTimesSolid className="text-[#212121] min-w-6 min-h-6 font-extrabold cursor-pointer" onClick={handleModalClose}/>
+              <LiaTimesSolid className="text-[#212121] min-w-6 min-h-6 font-extrabold cursor-pointer" onClick={handleModalClose} />
             </div>
             <p className="text-sm text-[#727272] py-3 px-4 font-normal">
               Registration successful! You can now log in to submit grievances, track their status, and receive
