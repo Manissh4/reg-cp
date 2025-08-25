@@ -1,4 +1,7 @@
 import { CommonRightSection } from "@/components/common-right-section";
+import { CustomButton } from "@/components/ui/CustomButton";
+import Link from "next/link";
+import { MdOutlinePhone } from "react-icons/md";
 
 export default function CPGRAMSAuth() {
     return (
@@ -17,15 +20,13 @@ export default function CPGRAMSAuth() {
             </div>
           </div>
 
-          <a
-            href="/auth/register"
-            className="w-full bg-[#7c3aed] hover:bg-[#8b5cf6] text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 shadow-lg"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-            </svg>
-            Register with Phone No.
-          </a>
+          <Link href={"/auth/register"}>
+            <CustomButton
+              value="Register with Phone No."
+              style="text-sm py-2.5 px-8"
+              leftIcon={<MdOutlinePhone size={20} />}
+            />
+          </Link>
 
           {/* SSO Text */}
           <div className="text-center text-gray-500 text-sm">or continue with Single sign-on (SSO)</div>

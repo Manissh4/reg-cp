@@ -13,6 +13,7 @@ import { IoMdCheckmark } from "react-icons/io";
 import { FaTimesCircle, FaCheckCircle } from "react-icons/fa";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import "@/styles/globals.css"
+import { CustomButton } from "@/components/ui/CustomButton"
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required("Full name is required"),
@@ -283,16 +284,15 @@ export default function CPGRAMSRegister() {
                 </Link>
               </span>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-[#613AF5] text-white rounded-[8px] font-medium py-3 px-8 text-base cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            <CustomButton
+              value={"Register"}
+              style="text-base py-3 px-8"
               disabled={!formik.isValid || !formik.values.agreeToTerms || !formik.values.captchaVerified}
-            >
-              Continue
-            </button>
+              handleClick={() => formik.handleSubmit()}
+            />
             <div className="flex items-center gap-2">
               <p className="text-text-hint text-sm">Already have an account? </p>
-              <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
+              <Link href="/auth" className=" text-[#613AF5] hover:underline font-medium">
                 Log In
               </Link>
             </div>

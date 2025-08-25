@@ -95,8 +95,6 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       lg: "h-12 px-4 text-base",
     }
 
-    console.log("error", error);
-
     const variantClasses = {
       default: "border border-input bg-background border-[#C6C6C6]",
       filled: "border-0 bg-muted",

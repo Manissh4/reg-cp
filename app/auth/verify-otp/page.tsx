@@ -14,6 +14,7 @@ import { MdOutlineMail, MdOutlineChevronRight } from "react-icons/md";
 import { LiaTimesSolid } from "react-icons/lia";
 import "@/styles/globals.css"
 import Link from "next/link"
+import { CustomButton } from "@/components/ui/CustomButton"
 
 const getValidationSchema = (userType: string) => {
   if (userType === "nri") {
@@ -54,7 +55,6 @@ export default function VerifyOTPPage() {
     initialValues: getInitialValues(),
     validationSchema: getValidationSchema(userType),
     onSubmit: (values) => {
-      console.log("OTP Verification:", values)
 
       if (!isNRI && values.phoneOtp) {
         if (values.phoneOtp === "648132") {
@@ -251,9 +251,9 @@ export default function VerifyOTPPage() {
               </div>}
             </div>
             <div className="flex flex-col gap-4">
-              <button
-                type="submit"
-                className="w-full bg-[#613AF5] text-white rounded-[8px] font-medium py-3 px-8 text-base cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+              <CustomButton
+                value="Verify"
+                style="text-base py-3 px-8"
                 disabled={
                   !formik.values.emailOtp ||
                   formik.values.emailOtp.length !== 6 ||
@@ -261,9 +261,8 @@ export default function VerifyOTPPage() {
                   phoneOtpStatus === "error" ||
                   emailOtpStatus === "error"
                 }
-              >
-                Verify
-              </button>
+                handleClick={() => formik.handleSubmit()}
+              />
               <div className="flex items-center gap-2">
                 <p className="text-text-hint text-sm">Already have an account? </p>
                 <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
@@ -290,7 +289,11 @@ export default function VerifyOTPPage() {
               updates from the concerned authorities
             </p>
             <div className="flex justify-end p-4">
-              <div className="bg-[#613AF5] text-white py-2.5 px-6 rounded-[8px] cursor-pointer" onClick={handleModalClose}>Done</div>
+              <CustomButton 
+                value="Done"
+                handleClick={handleModalClose}
+                style={'text-sm py-2.5 px-6'}
+              />
             </div>
           </div>
         </div>
