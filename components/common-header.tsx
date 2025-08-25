@@ -7,7 +7,7 @@ export function CommonHeader() {
     <header className="bg-[#FAEFFF] px-2 py-2.5">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-3">
-          <Image src="flag.jpg" alt="flag" width={33} height={22} />
+          <Image src="/flag.jpg" alt="flag" width={33} height={22} />
           <span className="text-label-dark font-medium text-sm">Government of India</span>
         </div>
 

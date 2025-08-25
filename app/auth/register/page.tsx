@@ -259,7 +259,7 @@ export default function CPGRAMSRegister() {
               )}
               <span className="text-sm text-gray-700">I'm not a robot</span>
             </div>
-            <Image src={'./reCAPTCHA.png'} alt="recaptcha" width={60} height={60} />
+            <Image src={'/reCAPTCHA.png'} alt="recaptcha" width={60} height={60} />
           </div>
 
           <div className="flex flex-col gap-3">
