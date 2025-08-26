@@ -20,12 +20,12 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   variant = 'primary',
   handleClick
 }) => {
-    const styles = {
-        base: 'flex items-center justify-center gap-2 px-4 py-2 rounded-[8px] font-medium cursor-pointer',
-        primary: 'bg-button-primary text-white',
-        secondary: 'bg-transparent text-button-primary border border-button-primary',
-        disabledStyle: 'opacity-50 cursor-not-allowed',
-    }
+  const styles = {
+    base: 'flex items-center justify-center gap-2 px-4 py-2 rounded-[8px] font-medium cursor-pointer',
+    primary: 'bg-button-primary text-white',
+    secondary: 'bg-transparent text-button-primary border border-button-primary',
+    disabledStyle: 'opacity-50 cursor-not-allowed',
+  }
 
   return (
     <button
