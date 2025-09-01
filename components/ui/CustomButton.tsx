@@ -9,6 +9,7 @@ interface CustomButtonProps {
   disabled?: boolean
   variant?: 'primary' | 'secondary'
   handleClick?: () => void
+  type?: "button" | "submit"
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -18,10 +19,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   value,
   disabled,
   variant = 'primary',
-  handleClick
+  handleClick,
+  type = "button"
 }) => {
   const styles = {
-    base: 'flex items-center justify-center gap-2 px-4 py-2 rounded-[8px] font-medium cursor-pointer',
+    base: 'flex items-center justify-center gap-2 rounded-[8px] font-medium cursor-pointer',
     primary: 'bg-button-primary text-white',
     secondary: 'bg-transparent text-button-primary border border-button-primary',
     disabledStyle: 'opacity-50 cursor-not-allowed',
@@ -31,6 +33,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     <button
       className={cn(styles.base, style, disabled && styles.disabledStyle, styles[variant])}
       onClick={handleClick}
+      type={type}
     >
       {leftIcon && <span>{leftIcon}</span>}
       {value}

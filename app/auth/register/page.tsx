@@ -14,6 +14,7 @@ import { FaTimesCircle, FaCheckCircle } from "react-icons/fa";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import "@/styles/globals.css"
 import { CustomButton } from "@/components/ui/CustomButton"
+import { countryCodes } from "@/utils/CountryCodes"
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required("Full name is required"),
@@ -32,16 +33,6 @@ const validationSchema = Yup.object({
   agreeToTerms: Yup.boolean().oneOf([true], "You must agree to the terms"),
   captchaVerified: Yup.boolean().oneOf([true], "Please verify you are not a robot"),
 })
-
-const countryCodes = [
-  { code: "+91", country: "India", flag: "🇮🇳" },
-  { code: "+1", country: "USA", flag: "🇺🇸" },
-  { code: "+44", country: "UK", flag: "🇬🇧" },
-  { code: "+971", country: "UAE", flag: "🇦🇪" },
-  { code: "+65", country: "Singapore", flag: "🇸🇬" },
-  { code: "+61", country: "Australia", flag: "🇦🇺" },
-  { code: "+49", country: "Germany", flag: "🇩🇪" },
-]
 
 export default function CPGRAMSRegister() {
   
@@ -65,7 +56,7 @@ export default function CPGRAMSRegister() {
         phone: `${values.mobileNumber}`,
         email: values.email,
       })
-      router.push(`/verify-otp?${params.toString()}`)
+      router.push(`/auth/verify-otp?${params.toString()}`)
     },
   })
 

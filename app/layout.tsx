@@ -5,8 +5,8 @@ import './globals.css'
 import { CommonHeader } from '@/components/common-header'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'CPGRAMS',
+  description: 'Next generation grievance management system by DARPG',
   generator: 'v0.app',
 }
 

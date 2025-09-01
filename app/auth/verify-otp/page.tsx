@@ -37,17 +37,17 @@ export default function VerifyOTPPage() {
 
   const [phoneResendTimer, setPhoneResendTimer] = useState(0)
   const [emailResendTimer, setEmailResendTimer] = useState(0)
-  const [phoneOtpStatus, setPhoneOtpStatus] = useState<"idle" | "success" | "error">("success")
-  const [emailOtpStatus, setEmailOtpStatus] = useState<"idle" | "success" | "error">("success")
+  const [phoneOtpStatus, setPhoneOtpStatus] = useState<"idle" | "success" | "error">("idle")
+  const [emailOtpStatus, setEmailOtpStatus] = useState<"idle" | "success" | "error">("idle")
   const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   const getInitialValues = () => {
     if (isNRI) {
-      return { emailOtp: "486231" }
+      return { emailOtp: "" }
     }
     return {
-      phoneOtp: "648132",
-      emailOtp: "486231",
+      phoneOtp: "",
+      emailOtp: "",
     }
   }
 
@@ -57,21 +57,21 @@ export default function VerifyOTPPage() {
     onSubmit: (values) => {
 
       if (!isNRI && values.phoneOtp) {
-        if (values.phoneOtp === "648132") {
+        if (values.phoneOtp === "123456") {
           setPhoneOtpStatus("success")
         } else {
           setPhoneOtpStatus("error")
         }
       }
 
-      if (values.emailOtp === "486231") {
+      if (values.emailOtp === "123456") {
         setEmailOtpStatus("success")
       } else {
         setEmailOtpStatus("error")
       }
 
-      const phoneValid = isNRI || values.phoneOtp === "648132"
-      const emailValid = values.emailOtp === "486231"
+      const phoneValid = isNRI || values.phoneOtp === "123456"
+      const emailValid = values.emailOtp === "123456"
 
       if (phoneValid && emailValid) {
         setTimeout(() => {
