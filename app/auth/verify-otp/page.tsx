@@ -3,36 +3,51 @@
 import { useState } from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-import { useSearchParams } from "next/navigation"
-import { DecorativeLeftSection } from "@/components/decorative-left-section"
+import { useSearchParams, useRouter } from "next/navigation"
 import { CommonRightSection } from "@/components/common-right-section"
 import { CustomInput } from "@/components/ui/custom-input"
 import { CheckCircle, AlertCircle, X } from "lucide-react"
-import { FaCircleCheck } from "react-icons/fa6";
 import { FaMobileScreenButton } from "react-icons/fa6";
 import { MdOutlineMail, MdOutlineChevronRight } from "react-icons/md";
-import { LiaTimesSolid } from "react-icons/lia";
 import "@/styles/globals.css"
 import Link from "next/link"
 import { CustomButton } from "@/components/ui/CustomButton"
+import SuccessModal from "@/components/SucessModal"
 
-const getValidationSchema = (userType: string) => {
-  if (userType === "nri") {
+const getValidationSchema = (userType: string, email: string | null, phone: string | null) => {
+  if (userType === "nri" && email) {
+    // NRI user, only email OTP required
     return Yup.object({
       emailOtp: Yup.string().length(6, "OTP must be 6 digits").required("Email OTP is required"),
     })
   }
+  if (phone && !email) {
+    // Only phone present, only phone OTP required
+    return Yup.object({
+      phoneOtp: Yup.string().length(6, "OTP must be 6 digits").required("Phone OTP is required"),
+    })
+  }
+  if (phone && email) {
+    // Both present, require both OTPs
+    return Yup.object({
+      phoneOtp: Yup.string().length(6, "OTP must be 6 digits").required("Phone OTP is required"),
+      emailOtp: Yup.string().length(6, "OTP must be 6 digits").required("Email OTP is required"),
+    })
+  }
+  // Default: require at least one
   return Yup.object({
-    phoneOtp: Yup.string().length(6, "OTP must be 6 digits").required("Phone OTP is required"),
-    emailOtp: Yup.string().length(6, "OTP must be 6 digits").required("Email OTP is required"),
+    emailOtp: Yup.string().length(6, "OTP must be 6 digits"),
+    phoneOtp: Yup.string().length(6, "OTP must be 6 digits"),
   })
 }
 
 export default function VerifyOTPPage() {
   const searchParams = useSearchParams()
+  const router = useRouter();
   const userType = searchParams.get("userType") || "indian"
-  const phone = searchParams.get("phone") || "+91 80712 34567"
-  const email = searchParams.get("email") || "kevin.work@gmail.com"
+  const phone = searchParams.get("phone")
+  const email = searchParams.get("email")
+  const mode = searchParams.get("mode")
   const isNRI = userType === "nri"
 
   const [phoneResendTimer, setPhoneResendTimer] = useState(0)
@@ -53,32 +68,63 @@ export default function VerifyOTPPage() {
 
   const formik = useFormik({
     initialValues: getInitialValues(),
-    validationSchema: getValidationSchema(userType),
+    validationSchema: getValidationSchema(userType, email, phone),
     onSubmit: (values) => {
-
-      if (!isNRI && values.phoneOtp) {
-        if (values.phoneOtp === "123456") {
-          setPhoneOtpStatus("success")
+      // NRI: only email OTP
+      if (isNRI && values.emailOtp) {
+        if (values.emailOtp === "123456") {
+          setEmailOtpStatus("success");
+          if (mode === "register") {
+            setShowSuccessModal(true);
+          } else if (mode === "forgot-password") {
+            router.push("/auth/create-password");
+          }
         } else {
-          setPhoneOtpStatus("error")
+          setEmailOtpStatus("error");
         }
+        return;
       }
 
-      if (values.emailOtp === "123456") {
-        setEmailOtpStatus("success")
-      } else {
-        setEmailOtpStatus("error")
+      // Phone only: only phone OTP
+      if (!isNRI && phone && !email && values.phoneOtp) {
+        if (values.phoneOtp === "123456") {
+          setPhoneOtpStatus("success");
+          if (mode === "register") {
+            setShowSuccessModal(true);
+          } else if (mode === "forgot-password") {
+            router.push("/auth/create-password");
+          }
+        } else {
+          setPhoneOtpStatus("error");
+        }
+        return;
       }
 
-      const phoneValid = isNRI || values.phoneOtp === "123456"
-      const emailValid = values.emailOtp === "123456"
-
-      if (phoneValid && emailValid) {
-        setTimeout(() => {
-          setShowSuccessModal(true)
-        }, 500)
+      // Both present: require both OTPs
+      if (!isNRI && phone && email) {
+        let valid = true;
+        if (values.phoneOtp !== "123456") {
+          setPhoneOtpStatus("error");
+          valid = false;
+        } else {
+          setPhoneOtpStatus("success");
+        }
+        if (values.emailOtp !== "123456") {
+          setEmailOtpStatus("error");
+          valid = false;
+        } else {
+          setEmailOtpStatus("success");
+        }
+        if (valid) {
+          if (mode === "register") {
+            setShowSuccessModal(true);
+          } else if (mode === "forgot-password") {
+            router.push("/auth/create-password");
+          }
+        }
+        return;
       }
-    },
+    }
   })
 
   const handleResend = (type: "phone" | "email") => {
@@ -111,6 +157,7 @@ export default function VerifyOTPPage() {
 
   const handleModalClose = () => {
     setShowSuccessModal(false);
+    router.push('/auth/login');
   }
 
   return (
@@ -185,42 +232,58 @@ export default function VerifyOTPPage() {
                 </div>}
               </div>
             )}
-            <div className="w-full border border-[#DDDDDD]" />
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MdOutlineMail className="min-w-6 min-h-6" />
-                <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">{email}</span></p>
-              </div>
-
-              <div className="flex">
-                <CustomInput
-                  type="otp"
-                  otpLength={6}
-                  value={formik.values.emailOtp}
-                  onChange={(e) => {
-                    formik.setFieldValue("emailOtp", e.target.value)
-                    if (emailOtpStatus !== "idle") {
-                      setEmailOtpStatus("idle")
-                    }
-                  }}
-                  error={emailOtpStatus === "error"}
-                  success={emailOtpStatus === "success"}
-                />
-              </div>
-
-              {emailOtpStatus === "success" && (
-                <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
-                  <CheckCircle className="w-4 h-4" />
-                  <span>OTP Verified successfully</span>
+            {email && <><div className="w-full border border-[#DDDDDD]" />
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MdOutlineMail className="min-w-6 min-h-6" />
+                  <p className="text-[#6B7383] font-normal">Please enter OTP sent to <span className="text-label-dark font-medium">{email}</span></p>
                 </div>
-              )}
 
-              {emailOtpStatus === "error" && (
-                <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>Incorrect OTP</span>
+                <div className="flex">
+                  <CustomInput
+                    type="otp"
+                    otpLength={6}
+                    value={formik.values.emailOtp}
+                    onChange={(e) => {
+                      formik.setFieldValue("emailOtp", e.target.value)
+                      if (emailOtpStatus !== "idle") {
+                        setEmailOtpStatus("idle")
+                      }
+                    }}
+                    error={emailOtpStatus === "error"}
+                    success={emailOtpStatus === "success"}
+                  />
+                </div>
+
+                {emailOtpStatus === "success" && (
+                  <div className="flex items-center gap-2 text-sm text-[#3C9718] font-normal">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>OTP Verified successfully</span>
                   </div>
+                )}
+
+                {emailOtpStatus === "error" && (
+                  <div className="flex items-center justify-between gap-2 text-sm text-[#B7131A] font-normal">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4" />
+                      <span>Incorrect OTP</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleResend("email")}
+                      disabled={emailResendTimer > 0}
+                      className=" disabled:text-gray-400 cursor-pointer"
+                    >
+                      <div className="flex items-center text-sm text-[#613AF5] font-medium">
+                        {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
+                        <MdOutlineChevronRight className="w-6 h-6" />
+                      </div>
+                    </button>
+                  </div>
+                )}
+
+                {emailOtpStatus === "idle" && <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
                   <button
                     type="button"
                     onClick={() => handleResend("email")}
@@ -232,39 +295,28 @@ export default function VerifyOTPPage() {
                       <MdOutlineChevronRight className="w-6 h-6" />
                     </div>
                   </button>
-                </div>
-              )}
-
-              {emailOtpStatus === "idle" && <div className="flex justify-between items-center">
-                <span className="text-sm text-text-hint font-normal">Didn't receive OTP?</span>
-                <button
-                  type="button"
-                  onClick={() => handleResend("email")}
-                  disabled={emailResendTimer > 0}
-                  className=" disabled:text-gray-400 cursor-pointer"
-                >
-                  <div className="flex items-center text-sm text-[#613AF5] font-medium">
-                    {emailResendTimer > 0 ? `Resend (${emailResendTimer}s)` : "Resend"}
-                    <MdOutlineChevronRight className="w-6 h-6" />
-                  </div>
-                </button>
-              </div>}
-            </div>
+                </div>}
+              </div></>}
             <div className="flex flex-col gap-4">
               <CustomButton
-                value="Verify"
+                value={mode === 'register' ? "Verify" : "Verify & Continue"}
                 style="text-base py-3 px-8"
                 disabled={
-                  !formik.values.emailOtp ||
-                  formik.values.emailOtp.length !== 6 ||
-                  (!isNRI && (!formik.values.phoneOtp || formik.values.phoneOtp.length !== 6)) ||
+                  (isNRI && (!formik.values.emailOtp || formik.values.emailOtp.length !== 6)) ||
+                  (!isNRI && email && phone && (
+                    !formik.values.emailOtp || formik.values.emailOtp.length !== 6 ||
+                    !formik.values.phoneOtp || formik.values.phoneOtp.length !== 6
+                  )) ||
+                  (!isNRI && phone && !email && (
+                    !formik.values.phoneOtp || formik.values.phoneOtp.length !== 6
+                  )) ||
                   phoneOtpStatus === "error" ||
                   emailOtpStatus === "error"
                 }
                 handleClick={() => formik.handleSubmit()}
               />
               <div className="flex items-center gap-2">
-                <p className="text-text-hint text-sm">Already have an account? </p>
+                <p className="text-text-hint text-sm">{mode === 'register' ? `Already have an account?` : 'Remember Password?'} </p>
                 <Link href="/" className=" text-[#613AF5] hover:underline font-medium">
                   Log In
                 </Link>
@@ -274,30 +326,13 @@ export default function VerifyOTPPage() {
         </div>
       </CommonRightSection>
 
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg max-w-md w-full flex flex-col border border-[#CED4DA]">
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center justify-center gap-2">
-                <FaCircleCheck className="text-[#3C9718] min-w-6 min-h-6" />
-                <p className="font-medium text-base">Register Successfully</p>
-              </div>
-              <LiaTimesSolid className="text-[#212121] min-w-6 min-h-6 font-extrabold cursor-pointer" onClick={handleModalClose} />
-            </div>
-            <p className="text-sm text-[#727272] py-3 px-4 font-normal">
-              Registration successful! You can now log in to submit grievances, track their status, and receive
-              updates from the concerned authorities
-            </p>
-            <div className="flex justify-end p-4">
-              <CustomButton 
-                value="Done"
-                handleClick={handleModalClose}
-                style={'text-sm py-2.5 px-6'}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      {showSuccessModal &&
+        <SuccessModal
+          title='Register Successfully'
+          message="Registration successful! You can now log in to submit grievances, track their status, and receive updates from the concerned authorities"
+          handleModalClose={handleModalClose}
+          buttonText="Done"
+        />}
     </>
   )
 }

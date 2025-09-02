@@ -47,7 +47,7 @@ export function LoginOtpVerify({
                         otpLength={6}
                         value={formik.values.Otp}
                         onChange={(e) => {
-                            formik.setFieldValue("emailOtp", e.target.value)
+                            formik.setFieldValue("Otp", e.target.value)
                             if (otpStatus !== "idle") {
                                 setEmailOtpStatus("idle")
                             }

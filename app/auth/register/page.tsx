@@ -55,6 +55,7 @@ export default function CPGRAMSRegister() {
         userType: isIndian ? "indian" : "nri",
         phone: `${values.mobileNumber}`,
         email: values.email,
+        mode: "register",
       })
       router.push(`/auth/verify-otp?${params.toString()}`)
     },
@@ -78,9 +79,9 @@ export default function CPGRAMSRegister() {
         <p className="text-label-dark font-medium text-[22px]">Enter your details to Register</p>
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <label className="text-label-dark font-medium text-sm">
+            <p className="text-label-dark font-medium text-sm">
               Full Name<span className="text-error">*</span>
-            </label>
+            </p>
             <CustomInput
               type="text"
               name="fullName"
@@ -101,9 +102,9 @@ export default function CPGRAMSRegister() {
           </div>
 
           <div className="w-full flex flex-col gap-1">
-            <label className="text-label-dark font-medium text-sm">
+            <p className="text-label-dark font-medium text-sm">
               Mobile Number<span className="text-error">*</span>
-            </label>
+            </p>
             <div className="min-w-full flex items-center gap-2">
               <CustomInput
                 type="select"
@@ -138,7 +139,7 @@ export default function CPGRAMSRegister() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-label-dark font-medium text-sm">Email Address</label>
+            <p className="text-label-dark font-medium text-sm">Email Address</p>
             <CustomInput
               type="email"
               name="email"
@@ -164,9 +165,9 @@ export default function CPGRAMSRegister() {
                 onFocus={() => setShowPasswordRequirements(true)}
                 onBlur={() => setShowPasswordRequirements(false)}
               >
-                <label className="text-label-dark font-medium text-sm cursor-pointer">
+                <p className="text-label-dark font-medium text-sm cursor-pointer">
                   Create Password
-                </label>
+                </p>
               </TooltipTrigger>
               <TooltipContent
                 side="top"
@@ -236,7 +237,7 @@ export default function CPGRAMSRegister() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3 py-2 px-4 border border-[#C6C6C6] rounded-lg bg-gray-50">
+          <div className="flex items-center justify-between gap-3 py-2 px-4 border border-[#C6C6C6] rounded-lg max-w-[300px]">
             <div className="flex items-center gap-2">
               {formik.values.captchaVerified ? (
                 <IoMdCheckmark className="w-7 h-7 text-[#18A164]" />
@@ -255,7 +256,7 @@ export default function CPGRAMSRegister() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="flex gap-2">
+            <div className="flex gap-2 max-w-[300px]">
               <input
                 type="checkbox"
                 name="agreeToTerms"
@@ -283,7 +284,7 @@ export default function CPGRAMSRegister() {
             />
             <div className="flex items-center gap-2">
               <p className="text-text-hint text-sm">Already have an account? </p>
-              <Link href="/auth" className=" text-[#613AF5] hover:underline font-medium">
+              <Link href="/auth/login" className=" text-[#613AF5] hover:underline font-medium">
                 Log In
               </Link>
             </div>

@@ -20,7 +20,7 @@ const LoginPage = () => {
     const router = useRouter();
     const type = useParams().type;
 
-    const getValidationSchema = (type: string, loginType: 'otp' | 'password' | null, showPassword: boolean) => {
+    const getValidationSchema = (type: string, showPassword: boolean) => {
         if (showPassword) {
             return Yup.object({
                 password: Yup.string().required("Password is required"),
@@ -47,7 +47,7 @@ const LoginPage = () => {
             email: "",
             password: ''
         },
-        validationSchema: getValidationSchema(type as string, loginType, showPassword),
+        validationSchema: getValidationSchema(type as string, showPassword),
         enableReinitialize: true,
         onSubmit: (values) => {
             if (showPassword) {
@@ -122,17 +122,22 @@ const LoginPage = () => {
                             </div>
                         }
                         {showPassword && (
-                            <div className="flex flex-col gap-1">
-                                <label className="text-label-dark font-medium text-sm">Password</label>
-                                <CustomInput
-                                    type={"password"}
-                                    name="password"
-                                    value={formik.values.password}
-                                    onChange={formik.handleChange}
-                                    placeholder="Create password"
-                                    className="w-full px-4 py-3 border rounded-lg text-label-dark outline-none"
-                                    required
-                                />
+                            <div className='flex flex-col gap-4'>
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-label-dark font-medium text-sm">Password</label>
+                                    <CustomInput
+                                        type={"password"}
+                                        name="password"
+                                        value={formik.values.password}
+                                        onChange={formik.handleChange}
+                                        placeholder="Create password"
+                                        className="w-full px-4 py-3 border rounded-lg text-label-dark outline-none"
+                                        required
+                                    />
+                                </div>
+                                <Link href="/auth/forgot-password" className="self-end text-sm text-[#613AF5] hover:underline font-medium">
+                                    Forgot Password
+                                </Link>
                             </div>
                         )}
                     </form>
