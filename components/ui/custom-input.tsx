@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { Eye, EyeOff, Search, Calendar, Clock, Upload, Mail, Phone, Lock } from "lucide-react"
+import { MdOutlineUploadFile } from "react-icons/md";
 
 export interface SelectOption {
   value: string
@@ -230,6 +231,30 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
           {helperText && (
             <p className={cn("text-xs", error ? "text-red-500" : "text-muted-foreground")}>{helperText}</p>
           )}
+        </div>
+      )
+    }
+
+    if (type === "file") {
+      return (
+        <div className={cn(containerClassName)}>
+          {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+          {description && <p className="text-xs text-muted-foreground">{description}</p>}
+
+          <div className="flex flex-col justify-center items-center gap-2 border border-[#C6C6C6] rounded-[8px] min-w-[700px] min-h-[172px]">
+            <MdOutlineUploadFile className="min-w-12 min-h-12 mb-2 text-button-primary" />
+            <p className="text-[#727272] text-sm font-normal">Please Drop or upload your files here</p>
+            <input
+              type="file"
+              className={cn(baseInputClasses, "cursor-pointer hidden")}
+              accept={accept}
+              multiple={multiple}
+              onChange={handleInputChange}
+              disabled={loading}
+              ref={ref}
+              {...props}
+            />
+          </div>
         </div>
       )
     }
