@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { Eye, EyeOff, Search, Calendar, Clock, Upload, Mail, Phone, Lock } from "lucide-react"
-import { MdOutlineUploadFile } from "react-icons/md";
+import Image from "next/image"
 
 export interface SelectOption {
   value: string
@@ -51,6 +51,7 @@ export interface CustomInputProps extends Omit<React.InputHTMLAttributes<HTMLInp
   // File input specific
   accept?: string
   multiple?: boolean
+  onFileInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 
   // Container props
   containerClassName?: string
@@ -78,6 +79,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       onOTPComplete,
       options,
       onSelectChange,
+      onFileInputChange,
       rows = 3,
       maxLength,
       showCounter,
@@ -89,6 +91,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
   ) => {
     const [showPassword, setShowPassword] = React.useState(false)
     const [currentLength, setCurrentLength] = React.useState(0)
+    const inputRef = React.useRef<HTMLInputElement>(null)
 
     const sizeClasses = {
       sm: "h-8 px-2 text-sm",
@@ -235,24 +238,61 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       )
     }
 
-    if (type === "file") {
+    if (type === "upload") {
+      const [isDragging, setIsDragging] = React.useState(false);
+
+      const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(true);
+      };
+
+      const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(false);
+      };
+
+      const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          console.log(Array.from(e.dataTransfer.files));
+          const fileInput = inputRef.current;
+          if (fileInput) {
+            const dt = new DataTransfer();
+            Array.from(e.dataTransfer.files).forEach(file => dt.items.add(file));
+            fileInput.files = dt.files;
+            const event = new Event("change", { bubbles: true });
+            fileInput.dispatchEvent(event);
+          }
+        }
+      };
+
       return (
         <div className={cn(containerClassName)}>
           {label && <label className="text-sm font-medium text-foreground">{label}</label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
-          <div className="flex flex-col justify-center items-center gap-2 border border-[#C6C6C6] rounded-[8px] min-w-[700px] min-h-[172px]">
-            <MdOutlineUploadFile className="min-w-12 min-h-12 mb-2 text-button-primary" />
-            <p className="text-[#727272] text-sm font-normal">Please Drop or upload your files here</p>
+          <div
+            onClick={() => inputRef.current?.click()}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={cn(
+              "flex flex-col justify-center items-center gap-4 border border-[#C6C6C6] rounded-[8px] cursor-pointer py-11",
+              containerClassName
+            )}
+          >
+            <Image src="/document-upload.png" alt="upload" width={48} height={48} />
+            <p className="text-[#727272] text-sm font-normal">
+              {"Please Drop or upload your files here"}
+            </p>
             <input
               type="file"
-              className={cn(baseInputClasses, "cursor-pointer hidden")}
+              className={cn(baseInputClasses, "hidden")}
+              onChange={onFileInputChange}
+              ref={inputRef}
               accept={accept}
               multiple={multiple}
-              onChange={handleInputChange}
-              disabled={loading}
-              ref={ref}
-              {...props}
             />
           </div>
         </div>

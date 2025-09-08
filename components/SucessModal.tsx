@@ -2,7 +2,7 @@ import { LiaTimesSolid } from "react-icons/lia";
 import { CustomButton } from "./ui/CustomButton";
 
 interface SuccessModalProps {
-    handleCancel: () => void;
+    handleCancel?: () => void;
     handleAction: () => void;
     handleModalClose: () => void;
     title: string;
