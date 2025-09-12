@@ -126,6 +126,24 @@
   --font-noto: "Noto Sans", sans-serif;
 }
 
+.custom-scrollbar {
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #DDDDDD;
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track{
+  background: transparent;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50 font-noto;
