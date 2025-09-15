@@ -4,7 +4,7 @@ import "@/styles/globals.css"
 
 export function CommonHeader() {
   return (
-    <header className="bg-[#FAEFFF] px-2 py-2.5">
+    <header className="bg-[#F4F3F9] px-2 py-2.5">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center gap-3">
           <Image src="/flag.jpg" alt="flag" width={33} height={22} />

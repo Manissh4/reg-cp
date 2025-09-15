@@ -2,7 +2,7 @@
 
 const Page = () => {
   return (
-    <div>Lodge Grievance</div>
+    <div>Lodge Greivance</div>
   )
 }
 

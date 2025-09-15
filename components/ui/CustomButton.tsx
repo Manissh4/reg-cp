@@ -24,7 +24,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 }) => {
   const styles = {
     base: 'flex items-center justify-center gap-2 rounded-[8px] font-medium cursor-pointer',
-    primary: 'bg-button-primary text-white',
+    primary: 'night-sky text-white',
     secondary: 'bg-transparent text-button-primary border border-button-primary',
     danger: 'bg-[#B7131A] text-white',
     dangerSecondary: 'bg-transparent text-[#B7131A] border border-[#B7131A]',
