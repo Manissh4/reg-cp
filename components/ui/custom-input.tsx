@@ -185,7 +185,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
     if (type === "select" && options) {
       return (
         <div className={cn(containerClassName)}>
-          {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+          {label && <label className="text-sm font-medium text-label-dark">{label}</label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
           <Select value={props.value as string} onValueChange={onSelectChange}>

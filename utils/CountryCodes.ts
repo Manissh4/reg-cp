@@ -7,3 +7,12 @@ export const countryCodes = [
   { code: "+61", country: "Australia", flag: "🇦🇺" },
   { code: "+49", country: "Germany", flag: "🇩🇪" },
 ]
+
+export const languages = [
+  { label: "English", value: "English"},
+  { label: "Tamil", value: "Tamil"},
+  { label: "Malayalam", value: "Malayalam"},
+  { label: "Kanada", value: "Kanada"},
+  { label: "Telugu", value: "Telugu"},
+  { label: "Hindi", value: "Hindi"}
+]
