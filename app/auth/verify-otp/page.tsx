@@ -328,10 +328,12 @@ export default function VerifyOTPPage() {
 
       {showSuccessModal &&
         <SuccessModal
+          titleIcon={}
+          handleAction={}
           title='Register Successfully'
           message="Registration successful! You can now log in to submit grievances, track their status, and receive updates from the concerned authorities"
           handleModalClose={handleModalClose}
-          buttonText="Done"
+          ActionButtonText="Done"
         />}
     </>
   )

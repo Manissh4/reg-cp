@@ -1,9 +1,18 @@
 'use client'
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FaUserLarge, FaRegBell } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
 
 export function ModuleHeader() {
+
+    const router = useRouter()
+
+    const handleSignOut = () => {
+        router.push('/')
+    }
+
     return (
         <div className="w-full bg-white flex items-center justify-between p-6 max-h-16">
             <div className="flex items-center gap-4">
@@ -12,13 +21,15 @@ export function ModuleHeader() {
             </div>
             <div className="flex items-center gap-6">
                 <FaRegBell className="w-6 h-6 cursor-pointer" style={{ color: "linear-gradient(90deg, #1E3C72 0%, #1E3C72 1%, #2A5298 100%)" }} />
-                <PiSignOut className="w-6 h-6 text-error cursor-pointer" />
-                <div className="w-12 h-12 rounded-full bg-[#F4F3F9] flex items-center justify-center cursor-pointer">
-                    <p
-                        className="font-semibold text-[26.67px]"
-                        style={{ color: "linear-gradient(90deg, rgba(30, 60, 114, 0.8) 0%, rgba(30, 60, 114, 0.8) 1%, rgba(42, 82, 152, 0.8) 100%)" }}
-                    >P</p>
-                </div>
+                <PiSignOut className="w-6 h-6 text-error cursor-pointer" onClick={() => handleSignOut} />
+                <Link href={'/user'}>
+                    <div className="w-12 h-12 rounded-full bg-[#F4F3F9] flex items-center justify-center cursor-pointer">
+                        <p
+                            className="font-semibold text-[26.67px]"
+                            style={{ color: "linear-gradient(90deg, rgba(30, 60, 114, 0.8) 0%, rgba(30, 60, 114, 0.8) 1%, rgba(42, 82, 152, 0.8) 100%)" }}
+                        >P</p>
+                    </div>
+                </Link>
             </div>
         </div>
     )

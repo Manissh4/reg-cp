@@ -34,6 +34,7 @@ export interface CustomInputProps extends Omit<React.InputHTMLAttributes<HTMLInp
   suffixIcon?: React.ReactNode
   prefix?: string
   suffix?: string
+  onSuffixIconClick?: () => void
 
   // Special types
   otpLength?: number
@@ -48,6 +49,9 @@ export interface CustomInputProps extends Omit<React.InputHTMLAttributes<HTMLInp
   maxLength?: number
   showCounter?: boolean
 
+  //OTP specific
+  otpSlotWidth?: string
+
   // File input specific
   accept?: string
   multiple?: boolean
@@ -55,6 +59,7 @@ export interface CustomInputProps extends Omit<React.InputHTMLAttributes<HTMLInp
 
   // Container props
   containerClassName?: string
+
 }
 
 const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
@@ -77,6 +82,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       suffix,
       otpLength = 6,
       onOTPComplete,
+      otpSlotWidth,
       options,
       onSelectChange,
       onFileInputChange,
@@ -85,6 +91,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       showCounter,
       accept,
       multiple,
+      onSuffixIconClick,
       ...props
     },
     ref,
@@ -169,6 +176,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
                     "border-[#C6C6C6] focus:border-blue-500 focus:ring-2 focus:ring-blue-200",
                     error && "border-red-500 focus:border-red-500 focus:ring-red-200",
                     success && "border-green-500 focus:border-green-500 focus:ring-green-200",
+                    otpSlotWidth
                   )}
                 />
               ))}
@@ -340,7 +348,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
           />
 
           {(actualSuffixIcon || suffix) && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center" onClick={onSuffixIconClick}>
               {suffix && <span className="text-sm text-muted-foreground mr-1">{suffix}</span>}
               {actualSuffixIcon}
             </div>
