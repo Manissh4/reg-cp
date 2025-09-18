@@ -1,13 +1,26 @@
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import EditUser from "./EditUser";
 import PasswordManagement from "./PasswordManagement";
+import { useHeaderContext } from "@/components/Context/useHeaderContext";
+import { User } from "lucide-react";
 
 const page = () => {
 
     const [activeTab, setActiveTab] = useState<"user" | "password">('user');
+    const { setHeader } = useHeaderContext();
+
+  useEffect(() => {
+    setHeader({
+      title: "User Profile",
+      leftIcon: <User className="w-6 h-6 text-orange-600" />,
+      className: "bg-neutral-50 shadow-sm",
+    });
+
+    return () => setHeader({});
+  }, [setHeader]);
 
     return (
         <div className="w-full h-full bg-[#F4F3F9] p-6 flex flex-col gap-2">
