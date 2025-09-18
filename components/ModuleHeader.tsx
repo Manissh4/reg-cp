@@ -14,10 +14,6 @@ export function ModuleHeader() {
   const subtitle = header.subtitle ?? "";
   const extraClass = header.className ?? "";
 
-    const handleSignOut = () => {
-        router.push('/')
-    }
-
   return (
     <div className={`w-full bg-white flex items-center justify-between p-6 max-h-16 ${extraClass}`}>
       <div className="flex items-center gap-4">
@@ -33,13 +29,15 @@ export function ModuleHeader() {
           <FaRegBell className="w-6 h-6 cursor-pointer inline text-blue-900" />
         </span>
 
-        <PiSignOut className="w-6 h-6 text-error cursor-pointer" onClick={handleSignOut} />
+        <Link href={'/'}><PiSignOut className="w-6 h-6 text-error cursor-pointer" /></Link>
 
-        <div className="w-12 h-12 rounded-full bg-[#F4F3F9] flex items-center justify-center cursor-pointer">
-          <p className="font-semibold text-[26.67px] bg-clip-text text-transparent bg-[linear-gradient(90deg,rgba(30,60,114,0.8)_0%,rgba(42,82,152,0.8)_100%)]">
-            P
-          </p>
-        </div>
+        <Link href={'/user'}>
+          <div className="w-12 h-12 rounded-full bg-[#F4F3F9] flex items-center justify-center cursor-pointer">
+            <p className="font-semibold text-[26.67px] bg-clip-text text-transparent bg-[linear-gradient(90deg,rgba(30,60,114,0.8)_0%,rgba(42,82,152,0.8)_100%)]">
+              P
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );
