@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -113,9 +115,55 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --color-label-dark: #212121;
+  --color-text-hint: #727272;
+  --color-text-hint-2: #6C6A71;
+  --color-error: #B7131A;
+  --color-success: #3C9718;
+  --color-orange: #FF7501;
+  --color-button-primary: #613AF5;
+  --font-roboto: 'Roboto', sans-serif;
+  --font-noto: "Noto Sans", sans-serif;
+}
+
+.night-sky{
+  background: linear-gradient(90deg, #1E3C72 0%, #1E3C72 1%, #2A5298 100%);
+}
+.text-night-sky{
+  color: linear-gradient(90deg, #1E3C72 0%, #1E3C72 1%, #2A5298 100%);
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.custom-scrollbar {
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #DDDDDD;
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track{
+  background: transparent;
+}
+
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 font-noto;
   }
   body {
     @apply bg-background text-foreground;
