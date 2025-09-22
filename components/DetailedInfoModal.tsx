@@ -8,7 +8,7 @@ interface DetailedInfoModalProps {
     actionButtonText: string;
     cancelButtonText?: string;
     handleCancel?: () => void;
-    handleAction?: () => void;
+    handleAction: () => void;
     handleModalClose: () => void;
     leftButtonIcon?: React.ReactNode;
     rightButtonIcon?: React.ReactNode;

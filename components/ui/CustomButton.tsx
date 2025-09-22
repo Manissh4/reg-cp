@@ -7,7 +7,7 @@ interface CustomButtonProps {
   rightIcon?: React.ReactNode
   value: string
   disabled?: boolean
-  variant?: 'primary' | 'secondary' | 'danger' | 'dangerSecondary'
+  variant?: 'default' | 'primary' | 'secondary' | 'danger' | 'dangerSecondary'
   handleClick?: () => void
   type?: "button" | "submit"
 }
@@ -24,6 +24,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 }) => {
   const styles = {
     base: 'flex items-center justify-center gap-2 rounded-[8px] font-medium cursor-pointer',
+    default: 'bg-white border border-[#DDDDDD]',
     primary: 'night-sky text-white',
     secondary: 'bg-transparent text-button-primary border border-button-primary',
     danger: 'bg-[#B7131A] text-white',

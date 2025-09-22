@@ -325,12 +325,12 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
         <div className="relative">
-          {/* {(actualPrefixIcon || prefix) && (
+          {(actualPrefixIcon || prefix) && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
               {actualPrefixIcon}
               {prefix && <span className="text-sm text-muted-foreground ml-1">{prefix}</span>}
             </div>
-          )} */}
+          )}
 
           <Input
             type={type === "password" ? (showPassword ? "text" : "password") : type}

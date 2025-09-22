@@ -1,15 +1,25 @@
+// AppTable.tsx
 import React, { useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MoreVertical } from "lucide-react";
+import { Edit, MoreVertical } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-type TableProps = {
+interface AppTableProps {
     columns: { key: string; label: string }[];
     data: Record<string, any>[];
-};
+    menuItems: { 
+        key: string; 
+        icon: React.ReactNode; 
+        label: string; 
+        variant?: string; 
+        handleClick: () => void;
+        className?: string;
+    }[];
+}
 
-export const AppTable: React.FC<TableProps> = ({ columns, data }) => {
+export const AppTable: React.FC<AppTableProps> = ({ columns, data, menuItems }) => {
     const [selected, setSelected] = useState<number[]>([]);
     const allSelected = selected.length === data.length && data.length > 0;
 
@@ -18,7 +28,11 @@ export const AppTable: React.FC<TableProps> = ({ columns, data }) => {
     };
 
     const toggleSelectRow = (idx: number) => {
-        setSelected(selected.includes(idx) ? selected.filter(i => i !== idx) : [...selected, idx]);
+        setSelected(
+            selected.includes(idx)
+                ? selected.filter((i) => i !== idx)
+                : [...selected, idx]
+        );
     };
 
     return (
@@ -35,8 +49,10 @@ export const AppTable: React.FC<TableProps> = ({ columns, data }) => {
                             />
                         </th>
                         <th style={{ width: "16px" }} />
-                        {columns.map(col => (
-                            <th key={col.key} className="p-3 font-medium text-base">{col.label}</th>
+                        {columns.map((col) => (
+                            <th key={col.key} className="p-3 font-medium text-base">
+                                {col.label}
+                            </th>
                         ))}
                         <th className="p-3" />
                     </tr>
@@ -53,8 +69,11 @@ export const AppTable: React.FC<TableProps> = ({ columns, data }) => {
                                 />
                             </td>
                             <td className="min-w-4 border-b border-[#DDDDDD]" />
-                            {columns.map(col => (
-                                <td key={col.key} className="p-3 border-b border-[#DDDDDD] font-normal text-sm">
+                            {columns.map((col) => (
+                                <td
+                                    key={col.key}
+                                    className="p-3 border-b border-[#DDDDDD] font-normal text-sm"
+                                >
                                     {col.key === "status" ? (
                                         <span className="flex items-center gap-2">
                                             <span
@@ -71,27 +90,29 @@ export const AppTable: React.FC<TableProps> = ({ columns, data }) => {
                             <td className="p-3 border-b border-[#DDDDDD]">
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <MoreVertical size={18} className="text-[#405261] cursor-pointer" />
+                                        <MoreVertical
+                                            size={18}
+                                            className="text-[#405261] cursor-pointer"
+                                        />
                                     </PopoverTrigger>
-                                    <PopoverContent align="end" className="w-72 px-0 py-2 rounded-[16px]">
-                                        <div className="flex flex-col gap-4">
-                                            <div className="border-b border-[#DDDDDD] py-2 pl-4 pr-6 flex items-center gap-4 cursor-pointer">
-                                                <Image src='/edit.png' alt="edit" width={24} height={24} />
-                                                <p className="font-medium text-base text-label-dark">Edit Department</p>
+                                    <PopoverContent
+                                        align="end"
+                                        className="w-72 px-0 py-2 rounded-[16px]"
+                                    >
+                                        {menuItems.map((menu) => (
+                                            <div 
+                                                key={menu.key} 
+                                                className={cn(
+                                                    "flex items-center gap-4 border-b border-[#DDDDDD] py-4 pl-4 pr-6 cursor-pointer", 
+                                                    menu.variant === 'danger' ? 'text-error' : 'text-label-dark',
+                                                    menu.className
+                                                )} 
+                                                onClick={menu.handleClick}
+                                            >
+                                                {menu.icon}
+                                                <p className="font-medium text-base">{menu.label}</p>
                                             </div>
-                                            <div className="border-b border-[#DDDDDD] py-2 pl-4 pr-6 flex items-center gap-4 cursor-pointer text-error">
-                                                <Image src='/trash.png' alt="edit" width={24} height={24} />
-                                                <p className="font-medium text-base">Deactivate Department</p>
-                                            </div>
-                                            <div className="border-b border-[#DDDDDD] py-2 pl-4 pr-6 flex items-center gap-4 cursor-pointer">
-                                                <GoPlus className="text-label-dark" size={24} />
-                                                <p className="font-medium text-base text-label-dark">Add Category</p>
-                                            </div>
-                                            <div className="py-2 pl-4 pr-6 flex items-center gap-4 cursor-pointer">
-                                                <GoPlus size={24} className="text-label-dark" />
-                                                <p className="font-medium text-base text-label-dark">Add Employee</p>
-                                            </div>
-                                        </div>
+                                        ))}
                                     </PopoverContent>
                                 </Popover>
                             </td>
