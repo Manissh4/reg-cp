@@ -25,6 +25,7 @@ export interface CustomInputProps extends Omit<React.InputHTMLAttributes<HTMLInp
   error?: boolean
   success?: boolean
   loading?: boolean
+  required?: boolean
 
   // Content
   label?: string
@@ -203,7 +204,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
     if (type === "select" && options) {
       return (
         <div className={cn(containerClassName)}>
-          {label && <label className="text-sm font-medium text-label-dark">{label}</label>}
+          {label && <label className="text-sm font-medium text-label-dark flex gap-0.5">
+            {label}
+            <span className="text-error">*</span>
+          </label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
           <Select value={props.value as string} onValueChange={onSelectChange}>
@@ -229,7 +233,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
     if (type === "textarea") {
       return (
         <div className={cn(containerClassName)}>
-          {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+          {label && <label className="text-sm font-medium text-foreground flex gap-0.5">
+            {label}
+            <span className="text-error">*</span>
+          </label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
           <div className="relative">
@@ -347,7 +354,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
       return (
         <div className={cn(containerClassName)}>
-          {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+          {label && <label className="text-sm font-medium text-foreground flex gap-0.5">
+            {label}
+            <span className="text-error">*</span>
+          </label>}
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
           <div
@@ -391,7 +401,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
     return (
       <div className={cn(containerClassName)}>
-        {label && <label className="text-sm font-medium text-foreground">{label}</label>}
+        {label && <label className="text-sm font-medium text-foreground flex gap-0.5">
+          {label}
+          <span className="text-error">*</span>
+        </label>}
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
 
         <div className="relative">

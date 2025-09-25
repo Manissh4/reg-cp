@@ -1,5 +1,6 @@
 import { LiaTimesSolid } from "react-icons/lia";
 import { CustomButton } from "./ui/CustomButton";
+import { cn } from "@/lib/utils";
 
 interface SuccessModalProps {
     handleCancel?: () => void;
@@ -15,6 +16,7 @@ interface SuccessModalProps {
     ActionButtonText: string;
     cancelButtonVariant?: 'danger' | 'secondary' | 'primary' | 'dangerSecondary';
     actionButtonVariant?: 'danger' | 'secondary' | 'primary' | 'dangerSecondary';
+    messageClassName?: string
 };
 
 export default function SuccessModal({
@@ -30,7 +32,8 @@ export default function SuccessModal({
     rightButtonIcon,
     leftButtonIcon,
     cancelButtonVariant,
-    actionButtonVariant
+    actionButtonVariant,
+    messageClassName
 }: SuccessModalProps) {
 
     return (
@@ -43,7 +46,7 @@ export default function SuccessModal({
                     </div>
                     <LiaTimesSolid className="text-[#212121] min-w-6 min-h-6 font-extrabold cursor-pointer" onClick={handleModalClose} />
                 </div>
-                <p className="text-sm text-[#727272] py-3 px-4 font-normal">{message}</p>
+                <p className={cn("text-sm text-[#727272] py-3 px-4 font-normal", messageClassName)}>{message}</p>
                 <div className="flex justify-end p-4">
                     <div className="flex items-center justify-center gap-4">
                         {cancelButton && (

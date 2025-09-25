@@ -11,10 +11,12 @@ import { deptCols, deptData } from "@/utils/TableData";
 import { Pencil, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import CrudModal from "../CrudModal";
-import EditColumnModal from "./EditColumnModal";
+import EditColumnModal from "../EditColumnModal";
 import { useFormik } from "formik";
 import * as Yup from "yup"
 import CreateEditDepartmentModal from "./CreateEditDepartmentModal";
+import SuccessModal from "@/components/SucessModal";
+import { FaCheckCircle } from "react-icons/fa";
 
 interface Column {
     id: string;
@@ -45,6 +47,8 @@ export default function Page() {
     const [mode, setMode] = useState<'create' | 'edit' | null>(null)
     const [showEditModal, setShowEditModal] = useState<Boolean>(false);
     const [showCEModal, setShowCEModal] = useState<Boolean>(false);
+    const [showSuccessModal, setShowSuccessModal] = useState<Boolean>(false);
+    const [showDeactivateModal, setShowDeactivateModal] = useState<Boolean>(false);
     const { setHeader } = useHeaderContext();
     const maxHeight = useMaxHeight(220);
     const rowsPerPage = 7;
@@ -104,6 +108,7 @@ export default function Page() {
         onSubmit: (values) => {
             console.log("Values", values);
             setShowCEModal(false);
+            setShowSuccessModal(true);
         }
     })
 
@@ -181,8 +186,8 @@ export default function Page() {
                             columns={deptCols}
                             data={currentRows}
                             menuItems={[
-                                { key: 'editDepartment', icon: <Pencil className="w-6 h-6" />, label: 'Edit Department', handleClick: () => { setMode('edit'); setShowCEModal(true) }},
-                                { key: 'deactivateDepartment', icon: <Trash className="w-6 h-6" />, label: 'Deactivate Department', variant: 'danger', handleClick: () => { } },
+                                { key: 'editDepartment', icon: <Pencil className="w-6 h-6" />, label: 'Edit Department', handleClick: () => { setMode('edit'); setShowCEModal(true) } },
+                                { key: 'deactivateDepartment', icon: <Trash className="w-6 h-6" />, label: 'Deactivate Department', variant: 'danger', handleClick: () => { setShowDeactivateModal(true) } },
                                 { key: 'addCategory', icon: <Plus className="w-6 h-6" />, label: 'Add Category', handleClick: () => { } },
                                 { key: 'addEmployee', icon: <Plus className="w-6 h-6" />, label: 'Add Employee', handleClick: () => { }, className: 'border-none' }
                             ]}
@@ -254,7 +259,42 @@ export default function Page() {
                     handleAction={() => formik.handleSubmit()}
                     handleModalClose={() => setShowCEModal(false)}
                     className="max-w-[980px] max-h-[708px] w-[980px] h-[708px]"
-                    children={<CreateEditDepartmentModal formik={formik}/>}
+                    children={
+                        <CreateEditDepartmentModal formik={formik} />
+                    }
+                />
+            }
+            {showSuccessModal &&
+                <SuccessModal
+                    title="Department created successfully"
+                    titleIcon={<FaCheckCircle className="w-6 h-6 text-success" />}
+                    message="The Department has been created successfully"
+                    ActionButtonText="Done"
+                    handleAction={() => setShowSuccessModal(false)}
+                    handleModalClose={() => setShowSuccessModal(false)}
+                />
+            }
+            {showDeactivateModal &&
+                <SuccessModal
+                    title={`Deactivate ${activeTab}`}
+                    titleIcon={
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 5.97998C17.67 5.64998 14.32 5.47998 10.98 5.47998C9 5.47998 7.02 5.57998 5.04 5.77998L3 5.97998" stroke="#B7131A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M8.5 4.97L8.72 3.66C8.88 2.71 9 2 10.69 2H13.31C15 2 15.13 2.75 15.28 3.67L15.5 4.97" stroke="#B7131A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M18.8484 9.14001L18.1984 19.21C18.0884 20.78 17.9984 22 15.2084 22H8.78844C5.99844 22 5.90844 20.78 5.79844 19.21L5.14844 9.14001" stroke="#B7131A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M10.3281 16.5H13.6581" stroke="#B7131A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M9.5 12.5H14.5" stroke="#B7131A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    }
+                    message="Are you sure you want to Deactivate the 'Finance Ministry' department? This action cannot be undone. Are you sure you want to proceed?"
+                    ActionButtonText="Deactivate"
+                    actionButtonVariant="danger"
+                    cancelButton
+                    cancelButtonText="Cancel"
+                    cancelButtonVariant="secondary"
+                    handleAction={() => setShowDeactivateModal(false)}
+                    handleModalClose={() => setShowDeactivateModal(false)}
+                    handleCancel={() => setShowDeactivateModal(false)}
                 />
             }
         </div>
