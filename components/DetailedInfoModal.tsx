@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface DetailedInfoModalProps {
     title: string;
     cancelButton?: boolean;
-    actionButtonText: string;
+    actionButtonText?: string;
     cancelButtonText?: string;
     handleCancel?: () => void;
     handleAction: () => void;

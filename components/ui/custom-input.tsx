@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
-import { Eye, EyeOff, Search, Calendar, Clock, Upload, Mail, Phone, Lock } from "lucide-react"
+import { Eye, EyeOff, Search, Calendar, Clock, Upload, Mail, Phone, Lock, Plus, ChevronDown } from "lucide-react"
 import Image from "next/image"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu"
+import { Button } from "./button"
 
 export interface SelectOption {
   value: string
@@ -59,7 +61,10 @@ export interface CustomInputProps extends Omit<React.InputHTMLAttributes<HTMLInp
 
   // Container props
   containerClassName?: string
-
+  // Button Dropdown specific
+   dropdownOptions?: SelectOption[] 
+  onDropdownSelect?: (value: string) => void 
+  showSelectedOnButton?: boolean
 }
 
 const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
@@ -91,6 +96,9 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       showCounter,
       accept,
       multiple,
+      dropdownOptions,
+      onDropdownSelect,
+      showSelectedOnButton = false,
       onSuffixIconClick,
       ...props
     },
@@ -98,6 +106,8 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
   ) => {
     const [showPassword, setShowPassword] = React.useState(false)
     const [currentLength, setCurrentLength] = React.useState(0)
+        const [selectedDropdownLabel, setSelectedDropdownLabel] = React.useState<string | null>(null)
+
     const inputRef = React.useRef<HTMLInputElement>(null)
 
     const sizeClasses = {
@@ -245,6 +255,66 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
         </div>
       )
     }
+   if (type === "buttonDropdown") {
+      // fallback default options if none provided
+      const fallbackOptions: SelectOption[] = [
+        { label: "Take-Up", value: "takeup" },
+        { label: "Forward", value: "forward" },
+      ]
+      const items = (dropdownOptions && dropdownOptions.length > 0) ? dropdownOptions : fallbackOptions
+
+      // helper when an option is chosen
+      const handleDropdownClick = (opt: SelectOption) => {
+        if (showSelectedOnButton) {
+          setSelectedDropdownLabel(opt.label)
+        }
+        onDropdownSelect?.(opt.value)
+      }
+
+      // compute label to show on main button
+      const mainLabel = showSelectedOnButton && selectedDropdownLabel ? `${label} • ${selectedDropdownLabel}` : label
+
+      return (
+        <div className="flex gap-0.5">
+          <Button
+            className="bg-[#235e90] hover:bg-[#517f9f] text-white rounded-r-none"
+            disabled={props.disabled}
+            onClick={() => {
+              // If you want the main button to trigger a default action, handle here.
+            }}
+          >
+            {mainLabel}
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="bg-[#235e90] hover:bg-[#517f9f] text-white px-2 rounded-l-none"
+                disabled={props.disabled}
+              >
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            {/* only render menu when not disabled */}
+            {!props.disabled && (
+              <DropdownMenuContent className="w-48">
+                {items.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => handleDropdownClick(opt)}
+                  >
+                    {opt.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            )}
+          </DropdownMenu>
+        </div>
+      )
+    }
+
+
 
     if (type === "upload") {
       const [isDragging, setIsDragging] = React.useState(false);
