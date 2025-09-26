@@ -8,7 +8,7 @@ interface CustomButtonProps {
   value: string
   disabled?: boolean
   variant?: 'default' | 'primary' | 'secondary' | 'danger' | 'dangerSecondary'
-  handleClick?: () => void
+  handleClick: () => void
   type?: "button" | "submit"
 }
 

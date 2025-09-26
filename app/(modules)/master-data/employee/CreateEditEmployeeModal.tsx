@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Accordion from './Accordian'
+import Accordion from '../../../../components/Accordian'
 import { CustomInput } from '@/components/ui/custom-input'
 import { languages } from '@/utils/CountryCodes'
 import { Label } from "@/components/ui/label"

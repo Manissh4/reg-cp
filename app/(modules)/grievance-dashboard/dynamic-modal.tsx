@@ -164,7 +164,7 @@ export function DynamicModal({
           <button
             type="button"
             onClick={onClose}
-            className="ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-card-foreground/60 transition hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="ml-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-card-foreground/60 transition hover:bg-secondary focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-ring"
             aria-label="Close dialog"
           >
             <X className="h-5 w-5" aria-hidden="true" />

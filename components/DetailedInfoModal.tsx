@@ -8,7 +8,7 @@ interface DetailedInfoModalProps {
     actionButtonText?: string;
     cancelButtonText?: string;
     handleCancel?: () => void;
-    handleAction: () => void;
+    handleAction?: () => void;
     handleModalClose: () => void;
     leftButtonIcon?: React.ReactNode;
     rightButtonIcon?: React.ReactNode;
@@ -60,7 +60,7 @@ const DetailedInfoModal = ({
                             />
                         )}
                         <CustomButton
-                            value={actionButtonText}
+                            value={actionButtonText || ''}
                             handleClick={handleAction}
                             style={'text-sm py-2.5 px-8'}
                             variant={"primary"}

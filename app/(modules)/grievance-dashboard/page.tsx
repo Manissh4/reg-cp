@@ -19,10 +19,14 @@ import { Button } from "@/components/ui/button";
 import { GrievanceCard } from "@/components/grievance-card";
 import { CustomInput } from "@/components/ui/custom-input";
 import { ForwardGrievanceDialog } from "./Take-up-modal";
+import SuccessModal from "@/components/SucessModal";
+import { useRouter } from "next/navigation";
 
 export default function NewGrievancePage() {
   const { setHeader } = useHeaderContext();
   const [forwardDialogOpen, setForwardDialogOpen] = useState(false);
+  const [showATRModal, setShowATRModal] = useState<Boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     setHeader({
@@ -277,8 +281,8 @@ export default function NewGrievancePage() {
               ]}
               onDropdownSelect={(val) => {
                 if (val === "forward") {
-                    setForwardDialogOpen(true);
-                 
+                  setForwardDialogOpen(true);
+
                 }
 
                 console.log("selected action:", val);
@@ -330,6 +334,7 @@ export default function NewGrievancePage() {
                         { label: "Take-Up", value: "takeup" },
                         { label: "Forward", value: "forward" },
                         { label: "Work on it", value: "Test" },
+                        { label: "Resolve", value: "resolve" },
                       ]}
                       onDropdownSelect={(val) => {
                         if (val === "forward") {
@@ -339,6 +344,8 @@ export default function NewGrievancePage() {
                             console.warn("No grievance selected to forward");
                           }
                           return;
+                        } else if (val === "resolve") {
+                          setShowATRModal(true);
                         }
 
                         console.log("selected action:", val);
@@ -448,49 +455,69 @@ export default function NewGrievancePage() {
                   })()}
                 </div>
               </div>
-             
+
             </DetailedInfoModal>
           )}
-          
-        </div>
-         <ForwardGrievanceDialog
-                open={forwardDialogOpen}
-                onOpenChange={setForwardDialogOpen}
-                grievanceId={editableDraft?.id}
-                onSuccess={(result) => {
-                  setGrievances((prev) =>
-                    prev.map((g) => {
-                      if (g.id !== editableDraft?.id) return g;
-                      const copy = JSON.parse(JSON.stringify(g));
-                      copy.timeline = copy.timeline ?? [];
-                      copy.timeline.unshift({
-                        label: "Forwarded",
-                        status: "completed",
-                        badge:
-                          result.forwardType === "internal"
-                            ? "Forwarded (Internal)"
-                            : "Forwarded (External)",
-                        date: new Date().toLocaleDateString(),
-                        time: new Date().toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }),
-                        badgeColor: "bg-blue-100 text-blue-700",
-                      });
-                      copy.info.status = "Forwarded";
-                      copy.info.assignee =
-                        result.assignee ?? copy.info.assignee;
-                      if (result.referenceId) {
-                        copy.info.forwardReference = result.referenceId;
-                      }
-                      return copy;
-                    })
-                  );
 
-                  setForwardDialogOpen(false);
-                }}
-              />{" "}
+        </div>
+        <ForwardGrievanceDialog
+          open={forwardDialogOpen}
+          onOpenChange={setForwardDialogOpen}
+          grievanceId={editableDraft?.id}
+          onSuccess={(result) => {
+            setGrievances((prev) =>
+              prev.map((g) => {
+                if (g.id !== editableDraft?.id) return g;
+                const copy = JSON.parse(JSON.stringify(g));
+                copy.timeline = copy.timeline ?? [];
+                copy.timeline.unshift({
+                  label: "Forwarded",
+                  status: "completed",
+                  badge:
+                    result.forwardType === "internal"
+                      ? "Forwarded (Internal)"
+                      : "Forwarded (External)",
+                  date: new Date().toLocaleDateString(),
+                  time: new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
+                  badgeColor: "bg-blue-100 text-blue-700",
+                });
+                copy.info.status = "Forwarded";
+                copy.info.assignee =
+                  result.assignee ?? copy.info.assignee;
+                if (result.referenceId) {
+                  copy.info.forwardReference = result.referenceId;
+                }
+                return copy;
+              })
+            );
+
+            setForwardDialogOpen(false);
+          }}
+        />{" "}
       </main>
+      {showATRModal &&
+        <SuccessModal
+          title="Start ATR Process"
+          titleIcon={
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M21 7V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V7C3 4 4.5 2 8 2H16C19.5 2 21 4 21 7Z" stroke="#FF7501" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M14.5 4.5V6.5C14.5 7.6 15.4 8.5 16.5 8.5H18.5" stroke="#FF7501" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M8 13H12" stroke="#FF7501" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M8 17H16" stroke="#FF7501" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          }
+          message={`The grievance has been assigned to ${<span className="text-label-dark">Defense</span>} Ministry under ${<span className="text-label-dark">Automobile</span>} Department, and the status is ${<span className="text-label-dark">Under Process.</span>} Do you want to proceed with closure and ATR process?`}
+          handleModalClose={() => setShowATRModal(false)}
+          ActionButtonText="Yes, Proceed"
+          handleAction={() => router.push('/grievance-dashboard/ATR/1')}
+          cancelButton
+          cancelButtonVariant="dangerSecondary"
+          handleCancel={() => setShowATRModal(false)}
+        />
+      }
     </div>
   );
 }

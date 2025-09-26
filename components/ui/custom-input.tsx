@@ -367,7 +367,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
             onDrop={handleDrop}
             className={cn(
               "flex flex-col justify-center items-center gap-4 border border-[#C6C6C6] rounded-[8px] cursor-pointer py-11",
-              containerClassName
+              className
             )}
           >
             <Image src="/document-upload.png" alt="upload" width={48} height={48} />

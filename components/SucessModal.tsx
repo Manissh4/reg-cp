@@ -8,7 +8,7 @@ interface SuccessModalProps {
     handleModalClose: () => void;
     title: string;
     titleIcon: React.ReactNode;
-    message: string;
+    message: string | React.ReactNode;
     leftButtonIcon?: React.ReactNode;
     rightButtonIcon?: React.ReactNode;
     cancelButton?: boolean;
