@@ -4,11 +4,13 @@ import { GrievanceCard } from "@/components/grievance-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Box, Filter, ListFilter, Plus, Search, SortAsc } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaClipboardList } from "react-icons/fa";
+import BulkClosureReviewDialog from "./reviewBulkClosure";
 
 export default function TrackGrievancePage() {
   const { setHeader } = useHeaderContext();
+  const [isBulkClosureOpen, setIsBulkClosureOpen] = useState(true);
 
   useEffect(() => {
     setHeader({
@@ -55,7 +57,8 @@ export default function TrackGrievancePage() {
       status: "Under Process",
       date: "22 Jul 2024",
       statusColor: "orange" as const,
-    },{
+    },
+    {
       id: "1278901",
       subject: "Issue regarding Aadhar Card Delay",
       ministry: "Health & Family Welfare",
@@ -63,7 +66,8 @@ export default function TrackGrievancePage() {
       status: "Under Process",
       date: "22 Jul 2024",
       statusColor: "orange" as const,
-    },{
+    },
+    {
       id: "1278901",
       subject: "Issue regarding Aadhar Card Delay",
       ministry: "Health & Family Welfare",
@@ -71,7 +75,8 @@ export default function TrackGrievancePage() {
       status: "Under Process",
       date: "22 Jul 2024",
       statusColor: "orange" as const,
-    },{
+    },
+    {
       id: "1278901",
       subject: "Issue regarding Aadhar Card Delay",
       ministry: "Health & Family Welfare",
@@ -79,6 +84,39 @@ export default function TrackGrievancePage() {
       status: "Under Process",
       date: "22 Jul 2024",
       statusColor: "orange" as const,
+    },
+  ];
+
+  const demoItems = [
+    {
+      id: "1278901",
+      status: "Closed",
+      subject: "Aadhar Card Deactivation - Address mismatch",
+      href: "#",
+    },
+    {
+      id: "1278904",
+      status: "Closed",
+      subject: "Aadhar Card Deactivation - User reported duplicate",
+      href: "#",
+    },
+    {
+      id: "1278907",
+      status: "Closed",
+      subject: "Aadhar Card Deactivation - Verification failed",
+      href: "#",
+    },
+    {
+      id: "1278910",
+      status: "Closed",
+      subject: "Aadhar Card Deactivation - KYC pending review",
+      href: "#",
+    },
+    {
+      id: "1278913",
+      status: "Closed",
+      subject: "Aadhar Card Deactivation - Document unreadable",
+      href: "#",
     },
   ];
 
@@ -99,7 +137,7 @@ export default function TrackGrievancePage() {
               variant="outline"
               className="border-[#dddddd] text-[#727272] hover:bg-[#f5f7fa] bg-transparent font-heading text-base16"
             >
-                <ListFilter className="w-4 h-4 mr-2 text-orange-500" />
+              <ListFilter className="w-4 h-4 mr-2 text-orange-500" />
               Sort
             </Button>
             <Button
@@ -122,6 +160,16 @@ export default function TrackGrievancePage() {
           ))}
         </div>
       </main>
+      <BulkClosureReviewDialog
+        open={isBulkClosureOpen}
+        onOpenChange={setIsBulkClosureOpen}
+        groupId="GRP-239871"
+        items={demoItems}
+        defaultSelectedIds={["1278904"]}
+        onConfirm={(ids) => {
+          console.log("[v0] Reopen grievances:", ids);
+        }}
+      />
     </div>
   );
 }
